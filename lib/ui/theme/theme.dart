@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instx/ui/theme/const.dart';
 
-final themeDart = ThemeData(
+final themeDark = ThemeData(
   brightness: Brightness.dark,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(

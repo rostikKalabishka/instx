@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:instx/futures/auth/view/auth_page.dart';
 
 import 'package:instx/ui/theme/theme.dart';
 
-class InstxApp extends StatelessWidget {
+import 'router/router.dart';
+
+class InstxApp extends StatefulWidget {
   const InstxApp({super.key});
 
   @override
+  State<InstxApp> createState() => _InstxAppState();
+}
+
+class _InstxAppState extends State<InstxApp> {
+  final appRouter = AppRouter();
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: themeLight,
-      darkTheme: themeDart,
+      darkTheme: themeDark,
       themeMode: ThemeMode.dark,
-      home: const AuthPage(),
+      routerConfig: appRouter.config(),
     );
   }
 }
