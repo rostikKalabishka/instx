@@ -1,20 +1,17 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:instx/ui/components/custom_text_field.dart';
 
 @RoutePage()
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+class ForgetPasswordPage extends StatefulWidget {
+  const ForgetPasswordPage({super.key});
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<ForgetPasswordPage> createState() => _ForgetPasswordPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
-  final usernameTextController = TextEditingController();
-
-  final passwordTextController = TextEditingController();
+class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final emailTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -24,7 +21,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         slivers: [
           const SliverAppBar(
             title: Text(
-              'Create profile',
+              'Sign in',
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -46,20 +43,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     controller: emailTextController,
                     hintText: 'email',
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    controller: usernameTextController,
-                    hintText: 'username',
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    controller: passwordTextController,
-                    hintText: 'password',
-                  ),
                 ],
               ),
             ),
@@ -69,8 +52,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
       bottomNavigationBar: BottomAppBar(
         color: theme.scaffoldBackgroundColor,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            GestureDetector(
+              child: Text(
+                'Forget password?',
+                style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
+              ),
+              onTap: () {},
+            ),
             ElevatedButton(
                 onPressed: () {}, child: const Text('Create account'))
           ],

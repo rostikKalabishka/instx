@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instx/domain/factory/provide_bloc.dart';
 
 import 'package:instx/ui/theme/theme.dart';
 
@@ -15,12 +16,14 @@ class _InstxAppState extends State<InstxApp> {
   final appRouter = AppRouter();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Flutter Demo',
-      theme: themeLight,
-      darkTheme: themeDark,
-      themeMode: ThemeMode.dark,
-      routerConfig: appRouter.config(),
+    return ProvideBloc(
+      child: MaterialApp.router(
+        title: 'Flutter Demo',
+        theme: themeLight,
+        darkTheme: themeDark,
+        themeMode: ThemeMode.dark,
+        routerConfig: appRouter.config(),
+      ),
     );
   }
 }

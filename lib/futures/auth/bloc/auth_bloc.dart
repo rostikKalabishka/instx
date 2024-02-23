@@ -10,7 +10,11 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
     on<AuthEvent>((event, emit) async {
-      if (event is NavigateToSignIn) {}
+      if (event is NavigateToSignIn) {
+        navigateToSignInPage(event, emit);
+      } else if (event is NavigateToRegistration) {
+        navigateToRegistrationPage(event, emit);
+      }
     });
   }
 
