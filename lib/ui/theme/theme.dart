@@ -10,6 +10,8 @@ final themeDark = ThemeData(
       // foregroundColor: Colors.white
     ),
   ),
+  colorScheme: const ColorScheme.dark(
+      onPrimary: Colors.black, secondary: Color.fromARGB(255, 30, 113, 229)),
   cardColor: AppConst.customButtonColor,
   appBarTheme:
       const AppBarTheme(backgroundColor: AppConst.appBarBackgroundColor),

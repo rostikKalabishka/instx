@@ -19,7 +19,7 @@ class _InstxAppState extends State<InstxApp> {
     return ProvideBloc(
       child: MaterialApp.router(
         title: 'Flutter Demo',
-        theme: themeLight,
+        theme: themeDark,
         darkTheme: themeDark,
         themeMode: ThemeMode.dark,
         routerConfig: appRouter.config(),

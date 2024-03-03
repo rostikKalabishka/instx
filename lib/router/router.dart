@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:instx/futures/auth/signin/forget_password/view/forget_password.dart';
 
 import '../futures/auth/auth_page.dart';
+import '../futures/home/home_page.dart';
 
 part 'router.gr.dart';
 
@@ -9,6 +10,7 @@ class AppRouterPath {
   static const signInRoutePath = '/signin';
   static const registrationRoutePath = '/registration';
   static const forgetPasswordRoutePath = '/signin/forget_password';
+  static const homeRoutePath = '/home';
 }
 
 @AutoRouterConfig()
@@ -25,6 +27,7 @@ class AppRouter extends _$AppRouter {
             path: AppRouterPath.registrationRoutePath),
         AutoRoute(
             page: ForgetPasswordRoute.page,
-            path: AppRouterPath.forgetPasswordRoutePath)
+            path: AppRouterPath.forgetPasswordRoutePath),
+        AutoRoute(page: HomeRoute.page, path: AppRouterPath.homeRoutePath),
       ];
 }

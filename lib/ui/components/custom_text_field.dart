@@ -14,10 +14,17 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
       onChanged: onChanged,
-      decoration: InputDecoration(hintText: hintText),
+      decoration: InputDecoration(
+        hintText: hintText,
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: theme.colorScheme.secondary)),
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: theme.colorScheme.secondary)),
+      ),
     );
   }
 }
