@@ -16,11 +16,11 @@ abstract interface class AbstractAuthRepository {
 
   Future<void> forgotPassword({required String email});
 
-  Future<void> singInWithGoogle();
+  Future<void> signInWithGoogle();
 
   Future<void> updateUserInfo(UserModel userModel);
 
   Future<String> uploadPicture(String file, String userId);
 
-  Future<void> singInWithApple();
+  Future<void> signInWithApple();
 }

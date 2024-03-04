@@ -29,6 +29,7 @@ dependencies:
   auto_route: ^7.8.4
   flutter_svg: ^2.0.9
   font_awesome_flutter: ^10.7.0
+  sign_in_with_apple: ^5.0.0
 
 dev_dependencies:
   flutter_test:

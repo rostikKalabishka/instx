@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class UserRepository implements AbstractAuthRepository {
   FirebaseAuth _firebaseAuth;
@@ -100,7 +101,7 @@ class UserRepository implements AbstractAuthRepository {
   }
 
   @override
-  Future<void> singInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -121,7 +122,7 @@ class UserRepository implements AbstractAuthRepository {
       throw e.toString();
     } catch (e) {
       log(e.toString());
-      throw e.toString();
+      rethrow;
     }
   }
 
@@ -147,13 +148,30 @@ class UserRepository implements AbstractAuthRepository {
       return url;
     } catch (e) {
       log(e.toString());
-      throw e.toString();
+      rethrow;
     }
   }
 
   @override
-  Future<void> singInWithApple() {
-    throw UnimplementedError();
+  Future<void> signInWithApple() async {
+    try {
+      final appleIdCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final oAuthProvider = OAuthProvider('apple.com');
+      final credential = oAuthProvider.credential(
+        idToken: appleIdCredential.identityToken,
+        accessToken: appleIdCredential.authorizationCode,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 
   @override
@@ -162,7 +180,7 @@ class UserRepository implements AbstractAuthRepository {
       await userCollection.doc(userModel.uid).update(userModel.toJson());
     } catch (e) {
       log(e.toString());
-      throw e.toString();
+      rethrow;
     }
   }
 }
