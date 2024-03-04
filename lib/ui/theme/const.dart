@@ -4,6 +4,7 @@ class AppConst {
   static const Color scaffoldBackgroundColor = Colors.black;
   static const Color appBarBackgroundColor = Colors.black;
   static const Color customButtonColor = Colors.white;
+  static const Color elevatedButtonColor = Color.fromARGB(255, 30, 113, 229);
 
   static const double kBodySmall = 14;
   static const double kBodyMedium = 16;

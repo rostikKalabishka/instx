@@ -34,7 +34,13 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: theme.colorScheme.secondary,
+        onPressed: () {},
+        child: const Icon(FontAwesomeIcons.plus),
+      ),
       bottomNavigationBar: bottomNavigationBar(),
       appBar: AppBar(
         title: Text('Instx'),
@@ -43,6 +49,7 @@ class _HomePageState extends State<HomePage> {
         index: _indexPage,
         children: pages,
       ),
+      // drawer: SideDrawer(),
     );
   }
 

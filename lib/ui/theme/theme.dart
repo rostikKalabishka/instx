@@ -5,10 +5,9 @@ final themeDark = ThemeData(
   brightness: Brightness.dark,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      // disabledBackgroundColor: const Color.fromARGB(255, 31, 45, 151),
-      backgroundColor: AppConst.customButtonColor,
-      // foregroundColor: Colors.white
-    ),
+        // disabledBackgroundColor: const Color.fromARGB(255, 31, 45, 151),
+        backgroundColor: AppConst.elevatedButtonColor,
+        foregroundColor: Colors.white),
   ),
   colorScheme: const ColorScheme.dark(
       onPrimary: Colors.black, secondary: Color.fromARGB(255, 30, 113, 229)),
