@@ -15,3 +15,12 @@ class NavigateToForgetPasswordPageEvent extends SignInEvent {
   @override
   List<Object> get props => super.props..addAll([context]);
 }
+
+class LoginEvent extends SignInEvent {
+  final BuildContext context;
+
+  const LoginEvent({required this.context});
+
+  @override
+  List<Object> get props => super.props..addAll([context]);
+}

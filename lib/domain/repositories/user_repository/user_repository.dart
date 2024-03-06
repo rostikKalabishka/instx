@@ -12,15 +12,15 @@ import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class UserRepository implements AbstractAuthRepository {
-  FirebaseAuth _firebaseAuth;
-  final Dio dio;
-
+  // final FirebaseFirestore firebaseFirestore;
   UserRepository({
     FirebaseAuth? firebaseAuth,
+    // required this.firebaseFirestore,
     required this.dio,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
-
-  final userCollection = FirebaseFirestore.instance.collection('users');
+  final FirebaseAuth _firebaseAuth;
+  final Dio dio;
+  final usersCollection = FirebaseFirestore.instance.collection('users');
 
   // Future<void> addUserDetails(UserModel userModel) async {
   //   try {
@@ -104,6 +104,7 @@ class UserRepository implements AbstractAuthRepository {
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      log(googleUser.toString());
 
       if (googleUser == null) {
         throw 'You canceled authentication with Google';
@@ -144,7 +145,7 @@ class UserRepository implements AbstractAuthRepository {
 
       await referenceStorageRef.putFile(imageFile);
       String url = await referenceStorageRef.getDownloadURL();
-      await userCollection.doc(userId).update({UserModelField.imageUrl: url});
+      await usersCollection.doc(userId).update({UserModelField.imageUrl: url});
       return url;
     } catch (e) {
       log(e.toString());
@@ -166,7 +167,7 @@ class UserRepository implements AbstractAuthRepository {
         idToken: appleIdCredential.identityToken,
         accessToken: appleIdCredential.authorizationCode,
       );
-
+      log(credential.toString());
       await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
       log(e.toString());
@@ -177,7 +178,7 @@ class UserRepository implements AbstractAuthRepository {
   @override
   Future<void> updateUserInfo(UserModel userModel) async {
     try {
-      await userCollection.doc(userModel.uid).update(userModel.toJson());
+      await usersCollection.doc(userModel.uid).update(userModel.toJson());
     } catch (e) {
       log(e.toString());
       rethrow;

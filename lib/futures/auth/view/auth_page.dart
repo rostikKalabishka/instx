@@ -50,7 +50,9 @@ class _AuthPageState extends State<AuthPage> {
                       horizontal: MediaQuery.of(context).size.width * 0.1,
                       vertical: MediaQuery.of(context).size.height * 0.01),
                   child: CustomButtonRegistration(
-                      onTap: () {},
+                      onTap: () {
+                        context.read<AuthBloc>().add(AuthWithGoogle());
+                      },
                       height: buttonHeight,
                       width: buttonWidth,
                       child: Row(
@@ -66,7 +68,7 @@ class _AuthPageState extends State<AuthPage> {
                             width: 5,
                           ),
                           Text(
-                            'Sign in with your google profile',
+                            'Sign in with your Google profile',
                             maxLines: 1,
                             style: theme.textTheme.bodyMedium,
                             overflow: TextOverflow.ellipsis,
@@ -83,7 +85,9 @@ class _AuthPageState extends State<AuthPage> {
                   child: CustomButtonRegistration(
                       height: buttonHeight,
                       width: buttonWidth,
-                      onTap: () {},
+                      onTap: () {
+                        context.read<AuthBloc>().add(AuthWithApple());
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -97,7 +101,7 @@ class _AuthPageState extends State<AuthPage> {
                             width: 5,
                           ),
                           Text(
-                            'Sign in with your apple profile',
+                            'Sign in with your Apple profile',
                             maxLines: 1,
                             style: theme.textTheme.bodyMedium,
                             overflow: TextOverflow.ellipsis,

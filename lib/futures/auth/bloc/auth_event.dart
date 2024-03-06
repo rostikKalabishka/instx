@@ -20,24 +20,6 @@ class NavigateToRegistration extends AuthEvent {
   List<Object> get props => super.props..addAll([context]);
 }
 
-class SignInWithApple extends AuthEvent {
-  // final BuildContext context;
-
-  // const SignInWithApple({required this.context});
-
-  // @override
-  // List<Object> get props => super.props..addAll([context]);
-}
-
-class SignInWithGoogle extends AuthEvent {
-  // final BuildContext context;
-
-  // const SignInWithGoogle({required this.context});
-
-  // @override
-  // List<Object> get props => super.props..addAll([context]);
-}
-
 class NavigateToSignIn extends AuthEvent {
   final BuildContext context;
 

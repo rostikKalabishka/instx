@@ -18,8 +18,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         navigateToSignInPage(event, emit);
       } else if (event is NavigateToRegistration) {
         navigateToRegistrationPage(event, emit);
-      } else if (event is SignInWithApple) {
-      } else if (event is SignInWithGoogle) {}
+      } else if (event is AuthWithApple) {
+        await signInWithApple(event, emit);
+      } else if (event is AuthWithGoogle) {
+        await signInWithGoogle(event, emit);
+      }
     });
   }
 
@@ -31,7 +34,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       autoRouter.push(const SignInRoute());
     } catch (e) {
-      emit(state.copyWith(error: e));
+      emit(state.copyWith(
+        error: e,
+      ));
+    }
+  }
+
+  Future<void> signInWithApple(AuthWithApple event, emit) async {
+    emit(state.copyWith(status: UserAuthStatus.unknown));
+    try {
+      final boba = _abstractAuthRepository.signInWithApple();
+      print(boba);
+      emit(state.copyWith(status: UserAuthStatus.auth));
+    } catch (e) {
+      emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
+    }
+  }
+
+  Future<void> signInWithGoogle(AuthWithGoogle event, emit) async {
+    emit(state.copyWith(status: UserAuthStatus.unknown));
+    try {
+      final boba = _abstractAuthRepository.signInWithGoogle();
+      print(boba);
+      emit(state.copyWith(status: UserAuthStatus.auth));
+    } catch (e) {
+      emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
     }
   }
 
