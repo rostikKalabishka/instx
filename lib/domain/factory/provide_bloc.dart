@@ -33,7 +33,9 @@ class _ProvideBlocState extends State<ProvideBloc> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider(
-          create: (_) => AuthBloc(abstractAuthRepository: userRepository),
+          create: (_) => AuthBloc(
+                abstractAuthRepository: userRepository,
+              ),
           child: const AuthPage()),
       BlocProvider(
           create: (_) => SignInBloc(abstractAuthRepository: userRepository),

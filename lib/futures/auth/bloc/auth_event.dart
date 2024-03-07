@@ -28,3 +28,11 @@ class NavigateToSignIn extends AuthEvent {
   @override
   List<Object> get props => super.props..addAll([context]);
 }
+
+class AuthenticationUserChanged extends AuthEvent {
+  const AuthenticationUserChanged(
+    this.user,
+  );
+
+  final User? user;
+}
