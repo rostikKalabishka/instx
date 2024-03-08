@@ -28,19 +28,19 @@ class DrawerWidget extends StatelessWidget {
               ),
               onTap: () {},
             ),
-            ListTile(
-              leading: const Icon(
-                Icons.payment,
-                size: 30,
-              ),
-              title: const Text(
-                'Twitter Blue',
-                style: TextStyle(
-                  fontSize: 22,
-                ),
-              ),
-              onTap: () {},
-            ),
+            // ListTile(
+            //   leading: const Icon(
+            //     Icons.payment,
+            //     size: 30,
+            //   ),
+            //   title: const Text(
+            //     'Twitter Blue',
+            //     style: TextStyle(
+            //       fontSize: 22,
+            //     ),
+            //   ),
+            //   onTap: () {},
+            // ),
             ListTile(
               leading: const Icon(
                 Icons.logout,

@@ -19,8 +19,6 @@ class _LoaderPageState extends State<LoaderPage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          print(state);
-
           navigateTo(context, state);
         },
         child: const Scaffold(

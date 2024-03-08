@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/futures/auth/registration/bloc/registration_bloc.dart';
+import 'package:instx/router/router.dart';
 import 'package:instx/ui/components/custom_text_field.dart';
 
 @RoutePage()
@@ -22,16 +23,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return BlocConsumer<RegistrationBloc, RegistrationState>(
-      listener: (context, state) {
-        // if (usernameTextController.text.isNotEmpty &&
-        //     passwordTextController.text.isNotEmpty &&
-        //     emailTextController.text.isNotEmpty) {
-        //   print(usernameTextController.text.isNotEmpty);
-        //   isActiveButton = true;
-        // } else {
-        //   isActiveButton = false;
-        //}
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
@@ -97,6 +89,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             password: passwordTextController.text,
                             userName: usernameTextController.text,
                             context: context));
+                        AutoRouter.of(context).pushAndPopUntil(
+                            const LoaderRoute(),
+                            predicate: (route) => false);
                       },
                       // isActiveButton ? () {} : null,
                       child: const Text('Create'))

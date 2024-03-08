@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:instx/ui/components/custom_text_field.dart';
-
 @RoutePage()
 class PostPage extends StatefulWidget {
   const PostPage({super.key, required this.userId});
@@ -25,7 +23,7 @@ class _PostPageState extends State<PostPage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.white10,
+            backgroundColor: theme.scaffoldBackgroundColor,
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),

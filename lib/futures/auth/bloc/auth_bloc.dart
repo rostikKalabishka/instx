@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 
@@ -20,7 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   })  : _abstractAuthRepository = abstractAuthRepository,
         super(const AuthState()) {
     _userSubscription = _abstractAuthRepository.user.listen((user) {
-      // log(user.toString());
+      print(user.toString());
       add(AuthenticationUserChanged(user));
     });
     on<AuthEvent>((event, emit) async {
@@ -60,6 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _abstractAuthRepository.signOut();
     } catch (e) {
+      print(e.toString());
       emit(state.copyWith(
         error: e,
       ));
@@ -78,15 +80,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> signInWithGoogle(AuthWithGoogle event, emit) async {
-    final autoRoute = AutoRouter.of(event.context);
+    // final autoRoute = AutoRouter.of(event.context);
     emit(state.copyWith(status: UserAuthStatus.unauth));
     try {
+      // final completer = Completer();
       await _abstractAuthRepository.signInWithGoogle();
 
       emit(state.copyWith(status: UserAuthStatus.auth));
-      autoRoute.push(
-        const LoaderRoute(),
-      );
+      // completer.complete();
+      // autoRoute.push(
+      //   const LoaderRoute(),
+      // );
     } catch (e) {
       emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
     }

@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instx/futures/allPost/view/postList.dart';
 import 'package:instx/futures/home/widget/drawer_widget.dart';
-import 'package:instx/router/router.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -15,12 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // @override
-  // void initState() {
-  //   print(widget.userId);
-  //   super.initState();
-  // }
-
   int _indexPage = 0;
   onPageChanged(int indexPage) {
     setState(() {
@@ -29,9 +23,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> pages = [
-    Container(
-      color: Colors.red,
-    ),
+    const PostListPage(),
     Container(
       color: Colors.blue,
     ),
@@ -44,16 +36,8 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       drawer: const DrawerWidget(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: theme.colorScheme.secondary,
-        onPressed: () async {
-          AutoRouter.of(context).push(PostRoute(userId: widget.userId));
-        },
-        child: const Icon(FontAwesomeIcons.plus),
-      ),
       bottomNavigationBar: bottomNavigationBar(),
       appBar: AppBar(
         title: const Text('Instx'),
@@ -62,7 +46,6 @@ class _HomePageState extends State<HomePage> {
         index: _indexPage,
         children: pages,
       ),
-      // drawer: SideDrawer(),
     );
   }
 

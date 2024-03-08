@@ -28,7 +28,6 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     try {
       await _abstractAuthRepository.login(
           password: event.password, email: event.email);
-      print(await _abstractAuthRepository.user.first);
     } catch (e) {
       emit(state.copyWith(error: e));
     }

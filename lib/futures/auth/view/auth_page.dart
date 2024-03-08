@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instx/futures/auth/bloc/auth_bloc.dart';
+import 'package:instx/router/router.dart';
 
 import 'package:instx/ui/components/components.dart';
 import 'package:instx/ui/theme/const.dart';
@@ -48,6 +49,9 @@ class AuthPage extends StatelessWidget {
                     context
                         .read<AuthBloc>()
                         .add(AuthWithGoogle(context: context));
+
+                    AutoRouter.of(context).pushAndPopUntil(const LoaderRoute(),
+                        predicate: (route) => false);
                   },
                   height: buttonHeight,
                   width: buttonWidth,
