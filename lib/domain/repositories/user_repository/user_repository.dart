@@ -12,26 +12,13 @@ import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class UserRepository implements AbstractAuthRepository {
-  // final FirebaseFirestore firebaseFirestore;
   UserRepository({
     FirebaseAuth? firebaseAuth,
-    // required this.firebaseFirestore,
     required this.dio,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
   final FirebaseAuth _firebaseAuth;
   final Dio dio;
   final usersCollection = FirebaseFirestore.instance.collection('users');
-
-  // Future<void> addUserDetails(UserModel userModel) async {
-  //   try {
-  //     if (userModel.uid.isNotEmpty) {
-  //       await userCollection.doc(userModel.uid).set(userModel.toJson());
-  //     }
-  //   } catch (e) {
-  //     log(e.toString());
-  //     rethrow;
-  //   }
-  // }
 
   @override
   Future<void> forgotPassword({required String email}) async {
@@ -69,10 +56,17 @@ class UserRepository implements AbstractAuthRepository {
   }
 
   @override
-  Future<void> registration(UserModel userModel) async {
+  Future<UserModel> registration(
+    UserModel userModel,
+    String password,
+  ) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: userModel.email, password: userModel.password);
+      UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: userModel.email, password: password);
+
+      userModel = userModel.copyWith(uid: user.user?.uid);
+
+      return userModel;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         log('The password provided is too weak.');
@@ -115,8 +109,19 @@ class UserRepository implements AbstractAuthRepository {
         final credential = GoogleAuthProvider.credential(
             accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
-        //final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
+        final UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+        final userDoc = usersCollection.doc(userCredential.user?.uid);
+        final existingDoc = await userDoc.get();
+        if (!existingDoc.exists) {
+          UserModel myUser = UserModel.userEmpty.copyWith(
+              createAt: DateTime.now().toString(),
+              email: userCredential.user?.email,
+              uid: userCredential.user?.uid,
+              username: userCredential.user?.displayName,
+              imageUrl: userCredential.user?.photoURL);
+          await setUserData(myUser);
+        }
       }
     } on FirebaseAuthException catch (e) {
       log(e.toString());
@@ -179,6 +184,29 @@ class UserRepository implements AbstractAuthRepository {
   Future<void> updateUserInfo(UserModel userModel) async {
     try {
       await usersCollection.doc(userModel.uid).update(userModel.toJson());
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> setUserData(UserModel userModel) async {
+    try {
+      await usersCollection.doc(userModel.uid).set(userModel.toJson());
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<UserModel> getUserById({required String userId}) async {
+    try {
+      return usersCollection
+          .doc(userId)
+          .get()
+          .then((value) => UserModel.fromJson(value.data()!));
     } catch (e) {
       log(e.toString());
       rethrow;

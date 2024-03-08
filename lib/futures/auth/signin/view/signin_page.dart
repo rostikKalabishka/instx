@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/futures/auth/signin/bloc/sign_in_bloc.dart';
-import 'package:instx/router/router.dart';
+
 import 'package:instx/ui/components/custom_text_field.dart';
 
 @RoutePage()
@@ -43,7 +43,7 @@ class _SignInPageState extends State<SignInPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Create account',
+                          'Sign in to your account',
                           style: theme.textTheme.displaySmall,
                         ),
                         const SizedBox(
@@ -84,7 +84,10 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        AutoRouter.of(context).push(const HomeRoute());
+                        context.read<SignInBloc>().add(LoginEvent(
+                            context: context,
+                            email: emailTextController.text,
+                            password: passwordTextController.text));
                       },
                       child: const Text('Next'))
                 ],

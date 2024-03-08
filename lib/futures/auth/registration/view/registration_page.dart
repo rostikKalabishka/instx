@@ -23,14 +23,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
     final theme = Theme.of(context);
     return BlocConsumer<RegistrationBloc, RegistrationState>(
       listener: (context, state) {
-        if (usernameTextController.text.isNotEmpty &&
-            passwordTextController.text.isNotEmpty &&
-            emailTextController.text.isNotEmpty) {
-          print(usernameTextController.text.isNotEmpty);
-          isActiveButton = true;
-        } else {
-          isActiveButton = false;
-        }
+        // if (usernameTextController.text.isNotEmpty &&
+        //     passwordTextController.text.isNotEmpty &&
+        //     emailTextController.text.isNotEmpty) {
+        //   print(usernameTextController.text.isNotEmpty);
+        //   isActiveButton = true;
+        // } else {
+        //   isActiveButton = false;
+        //}
       },
       builder: (context, state) {
         return GestureDetector(
@@ -91,7 +91,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                      onPressed: isActiveButton ? () {} : null,
+                      onPressed: () {
+                        context.read<RegistrationBloc>().add(RegistrationEvent(
+                            email: emailTextController.text,
+                            password: passwordTextController.text,
+                            userName: usernameTextController.text,
+                            context: context));
+                      },
+                      // isActiveButton ? () {} : null,
                       child: const Text('Create'))
                 ],
               ),

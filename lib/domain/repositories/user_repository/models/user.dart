@@ -14,40 +14,37 @@ class UserModelField {
 @JsonSerializable()
 class UserModel extends Equatable {
   final String uid;
-  final String password;
+
   final String email;
   final String username;
   final String imageUrl;
-  final DateTime createAt;
+  final String createAt;
 
   const UserModel({
     required this.uid,
-    required this.password,
     required this.email,
     required this.username,
     required this.imageUrl,
     required this.createAt,
   });
   @override
-  List<Object?> get props =>
-      [uid, password, email, username, imageUrl, createAt];
-  static final userEmpty = UserModel(
-      uid: '',
-      email: '',
-      username: '',
-      createAt: DateTime.now(),
-      imageUrl: '',
-      password: '');
+  List<Object?> get props => [uid, email, username, imageUrl, createAt];
+  static const UserModel userEmpty = UserModel(
+    uid: '',
+    email: '',
+    username: '',
+    createAt: '',
+    imageUrl: '',
+  );
   UserModel copyWith(
       {String? uid,
       String? password,
       String? email,
       String? username,
       String? imageUrl,
-      DateTime? createAt}) {
+      String? createAt}) {
     return UserModel(
         uid: uid ?? this.uid,
-        password: password ?? this.password,
         email: email ?? this.email,
         username: username ?? this.username,
         imageUrl: imageUrl ?? this.imageUrl,

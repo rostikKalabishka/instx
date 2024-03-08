@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 
@@ -9,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
+
 import 'package:instx/router/router.dart';
 
 part 'auth_event.dart';
@@ -34,6 +34,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await signInWithGoogle(event, emit);
       } else if (event is AuthenticationUserChanged) {
         await authenticationUserChanged(event, emit);
+      } else if (event is LogOut) {
+        await logOut(event, emit);
       }
     });
   }
@@ -54,11 +56,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> logOut(LogOut event, emit) async {
+    try {
+      await _abstractAuthRepository.signOut();
+    } catch (e) {
+      emit(state.copyWith(
+        error: e,
+      ));
+    }
+  }
+
   Future<void> signInWithApple(AuthWithApple event, emit) async {
     emit(state.copyWith(status: UserAuthStatus.unknown));
     try {
-      final boba = _abstractAuthRepository.signInWithApple();
-      print(boba);
+      await _abstractAuthRepository.signInWithApple();
+
       emit(state.copyWith(status: UserAuthStatus.auth));
     } catch (e) {
       emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
@@ -66,12 +78,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> signInWithGoogle(AuthWithGoogle event, emit) async {
-    emit(state.copyWith(status: UserAuthStatus.unknown));
+    final autoRoute = AutoRouter.of(event.context);
+    emit(state.copyWith(status: UserAuthStatus.unauth));
     try {
-      // final boba =
       await _abstractAuthRepository.signInWithGoogle();
 
       emit(state.copyWith(status: UserAuthStatus.auth));
+      autoRoute.push(
+        const LoaderRoute(),
+      );
     } catch (e) {
       emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
     }
@@ -83,9 +98,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       if (user != null) {
-        emit(state.copyWith(status: UserAuthStatus.auth));
+        emit(state.copyWith(status: UserAuthStatus.auth, userId: user.uid));
+      } else {
+        emit(state.copyWith(
+          status: UserAuthStatus.unauth,
+        ));
       }
     } catch (e) {
+      print(e);
       emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
     }
   }

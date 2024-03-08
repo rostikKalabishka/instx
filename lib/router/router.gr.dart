@@ -28,9 +28,29 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     HomeRoute.name: (routeData) {
+      final args = routeData.argsAs<HomeRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const HomePage(),
+        child: HomePage(
+          key: args.key,
+          userId: args.userId,
+        ),
+      );
+    },
+    LoaderRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const LoaderPage(),
+      );
+    },
+    PostRoute.name: (routeData) {
+      final args = routeData.argsAs<PostRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PostPage(
+          key: args.key,
+          userId: args.userId,
+        ),
       );
     },
     RegistrationRoute.name: (routeData) {
@@ -78,16 +98,90 @@ class ForgetPasswordRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-      : super(
+class HomeRoute extends PageRouteInfo<HomeRouteArgs> {
+  HomeRoute({
+    Key? key,
+    required String userId,
+    List<PageRouteInfo>? children,
+  }) : super(
           HomeRoute.name,
+          args: HomeRouteArgs(
+            key: key,
+            userId: userId,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'HomeRoute';
 
+  static const PageInfo<HomeRouteArgs> page = PageInfo<HomeRouteArgs>(name);
+}
+
+class HomeRouteArgs {
+  const HomeRouteArgs({
+    this.key,
+    required this.userId,
+  });
+
+  final Key? key;
+
+  final String userId;
+
+  @override
+  String toString() {
+    return 'HomeRouteArgs{key: $key, userId: $userId}';
+  }
+}
+
+/// generated route for
+/// [LoaderPage]
+class LoaderRoute extends PageRouteInfo<void> {
+  const LoaderRoute({List<PageRouteInfo>? children})
+      : super(
+          LoaderRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LoaderRoute';
+
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [PostPage]
+class PostRoute extends PageRouteInfo<PostRouteArgs> {
+  PostRoute({
+    Key? key,
+    required String userId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PostRoute.name,
+          args: PostRouteArgs(
+            key: key,
+            userId: userId,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'PostRoute';
+
+  static const PageInfo<PostRouteArgs> page = PageInfo<PostRouteArgs>(name);
+}
+
+class PostRouteArgs {
+  const PostRouteArgs({
+    this.key,
+    required this.userId,
+  });
+
+  final Key? key;
+
+  final String userId;
+
+  @override
+  String toString() {
+    return 'PostRouteArgs{key: $key, userId: $userId}';
+  }
 }
 
 /// generated route for

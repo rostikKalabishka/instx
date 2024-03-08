@@ -3,14 +3,21 @@ part of 'auth_bloc.dart';
 enum UserAuthStatus { auth, unknown, unauth }
 
 class AuthState extends Equatable {
-  const AuthState({this.error = '', this.status = UserAuthStatus.unknown});
+  const AuthState(
+      {this.error = '',
+      this.status = UserAuthStatus.unknown,
+      this.userId = ''});
   final Object error;
   final UserAuthStatus status;
+  final String userId;
 
   @override
-  List<Object> get props => [error, status];
+  List<Object> get props => [error, status, userId];
 
-  AuthState copyWith({Object? error, UserAuthStatus? status}) {
-    return AuthState(error: error ?? this.error, status: status ?? this.status);
+  AuthState copyWith({Object? error, UserAuthStatus? status, String? userId}) {
+    return AuthState(
+        error: error ?? this.error,
+        status: status ?? this.status,
+        userId: userId ?? this.userId);
   }
 }

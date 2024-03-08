@@ -41,7 +41,9 @@ class _ProvideBlocState extends State<ProvideBloc> {
           create: (_) => SignInBloc(abstractAuthRepository: userRepository),
           child: const SignInPage()),
       BlocProvider(
-          create: (_) => RegistrationBloc(), child: const RegistrationPage()),
+          create: (_) =>
+              RegistrationBloc(abstractAuthRepository: userRepository),
+          child: const RegistrationPage()),
       BlocProvider(
           create: (_) => ForgetPasswordBloc(),
           child: const ForgetPasswordPage())

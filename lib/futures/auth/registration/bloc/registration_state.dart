@@ -1,10 +1,19 @@
 part of 'registration_bloc.dart';
 
-sealed class RegistrationState extends Equatable {
-  const RegistrationState();
-  
-  @override
-  List<Object> get props => [];
-}
+enum UserAuthStatus { process, success, failure }
 
-final class RegistrationInitial extends RegistrationState {}
+class RegistrationState extends Equatable {
+  const RegistrationState(
+      {this.error = '', this.status = UserAuthStatus.process});
+  final Object error;
+  final UserAuthStatus status;
+  RegistrationState copyWith({Object? error, UserAuthStatus? status}) {
+    return RegistrationState(
+      error: error ?? this.error,
+      status: status ?? this.status,
+    );
+  }
+
+  @override
+  List<Object> get props => [error, status];
+}

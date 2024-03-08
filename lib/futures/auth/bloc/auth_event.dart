@@ -7,7 +7,14 @@ sealed class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AuthWithGoogle extends AuthEvent {}
+class AuthWithGoogle extends AuthEvent {
+  final BuildContext context;
+
+  const AuthWithGoogle({required this.context});
+
+  @override
+  List<Object> get props => super.props..add(context);
+}
 
 class AuthWithApple extends AuthEvent {}
 
@@ -36,3 +43,5 @@ class AuthenticationUserChanged extends AuthEvent {
 
   final User? user;
 }
+
+class LogOut extends AuthEvent {}
