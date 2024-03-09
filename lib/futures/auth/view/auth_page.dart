@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instx/futures/auth/bloc/auth_bloc.dart';
-import 'package:instx/router/router.dart';
 
 import 'package:instx/ui/components/components.dart';
 import 'package:instx/ui/theme/const.dart';

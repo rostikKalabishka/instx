@@ -8,7 +8,7 @@ import 'package:instx/router/router.dart';
 
 @RoutePage()
 class LoaderPage extends StatefulWidget {
-  const LoaderPage({super.key});
+  const LoaderPage({Key? key}) : super(key: key);
 
   @override
   State<LoaderPage> createState() => _LoaderPageState();
@@ -17,22 +17,30 @@ class LoaderPage extends StatefulWidget {
 class _LoaderPageState extends State<LoaderPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (BuildContext context, AuthState state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           navigateTo(context, state);
-        },
-        child: const Scaffold(
+        });
+        return const Scaffold(
           body: Center(
             child: CircularProgressIndicator.adaptive(),
           ),
-        ));
+        );
+      },
+    );
   }
 }
 
 void navigateTo(BuildContext context, AuthState state) {
-  final loadNextPage = state.status == UserAuthStatus.auth
-      ? HomeRoute(userId: state.userId)
-      : const AuthRoute();
-  AutoRouter.of(context).pushAndPopUntil(loadNextPage as PageRouteInfo<dynamic>,
-      predicate: (route) => false);
+  if (state.status == UserAuthStatus.auth && state.userId.isNotEmpty) {
+    final loadNextPage = HomeRoute(userId: state.userId);
+    AutoRouter.of(context).pushAndPopUntil(
+        loadNextPage as PageRouteInfo<dynamic>,
+        predicate: (route) => false);
+  } else {
+    AutoRouter.of(context).pushAndPopUntil(
+        const AuthRoute() as PageRouteInfo<dynamic>,
+        predicate: (route) => false);
+  }
 }
