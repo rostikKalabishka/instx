@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:instx/futures/auth/signin/forget_password/view/forget_password.dart';
 import 'package:instx/futures/loader/view/loader.dart';
 import 'package:instx/futures/post/view/post_page.dart';
+import 'package:instx/futures/profile/view/profile_page.dart';
 
 import '../futures/auth/auth_page.dart';
 import '../futures/home/home_page.dart';
@@ -17,6 +18,7 @@ class AppRouterPath {
   static const homeRoutePath = '/home';
   static const authRoutePath = '/auth';
   static const postRoutePath = '/home/post';
+  static const profileRoutePath = '/home/profile';
 }
 
 @AutoRouterConfig()
@@ -40,5 +42,7 @@ class AppRouter extends _$AppRouter {
             path: AppRouterPath.forgetPasswordRoutePath),
         AutoRoute(page: HomeRoute.page, path: AppRouterPath.homeRoutePath),
         AutoRoute(page: PostRoute.page, path: AppRouterPath.postRoutePath),
+        AutoRoute(
+            page: ProfileRoute.page, path: AppRouterPath.profileRoutePath),
       ];
 }

@@ -26,7 +26,11 @@ class DrawerWidget extends StatelessWidget {
                   fontSize: 22,
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                AutoRouter.of(context).push(
+                  const ProfileRoute(),
+                );
+              },
             ),
             // ListTile(
             //   leading: const Icon(

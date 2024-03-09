@@ -50,8 +50,8 @@ class AuthPage extends StatelessWidget {
                         .read<AuthBloc>()
                         .add(AuthWithGoogle(context: context));
 
-                    AutoRouter.of(context).pushAndPopUntil(const LoaderRoute(),
-                        predicate: (route) => false);
+                    // AutoRouter.of(context).pushAndPopUntil(const LoaderRoute(),
+                    //     predicate: (route) => false);
                   },
                   height: buttonHeight,
                   width: buttonWidth,
