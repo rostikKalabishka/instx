@@ -57,8 +57,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> logOut(LogOut event, emit) async {
+    final autoRouter = AutoRouter.of(event.context);
     try {
       await _abstractAuthRepository.signOut();
+      emit(state.copyWith(status: UserAuthStatus.unauth));
+      autoRouter.pushAndPopUntil(const LoaderRoute(),
+          predicate: (route) => false);
     } catch (e) {
       print(e.toString());
       emit(state.copyWith(
@@ -81,21 +85,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> signInWithGoogle(AuthWithGoogle event, emit) async {
     final autoRoute = AutoRouter.of(event.context);
     emit(state.copyWith(
-        status: UserAuthStatus.unauth,
-        buttonStateStatus: ButtonStateStatus.process));
+      status: UserAuthStatus.unauth,
+    ));
     try {
-      final completer = Completer();
       await _abstractAuthRepository.signInWithGoogle();
 
       emit(state.copyWith(
-          status: UserAuthStatus.auth,
-          buttonStateStatus: ButtonStateStatus.success));
-      if (state.buttonStateStatus == ButtonStateStatus.success) {
-        autoRoute.push(
-          const LoaderRoute(),
-        );
-      }
-      completer.complete();
+        status: UserAuthStatus.auth,
+      ));
+
+      autoRoute.push(
+        const LoaderRoute(),
+      );
     } catch (e) {
       emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
     }

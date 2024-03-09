@@ -44,4 +44,11 @@ class AuthenticationUserChanged extends AuthEvent {
   final User? user;
 }
 
-class LogOut extends AuthEvent {}
+class LogOut extends AuthEvent {
+  final BuildContext context;
+
+  const LogOut({required this.context});
+
+  @override
+  List<Object> get props => super.props..addAll([context]);
+}

@@ -3,7 +3,7 @@ import 'package:instx/domain/repositories/user_repository/models/user.dart';
 
 abstract interface class AbstractAuthRepository {
   Future<UserModel> registration(UserModel userModel, String password);
-  Future login({
+  Future<void> login({
     required String password,
     required String email,
   });

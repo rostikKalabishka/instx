@@ -6,16 +6,19 @@ class CustomTextField extends StatelessWidget {
     Key? key,
     required this.controller,
     this.onChanged,
+    this.obscureText,
     required this.hintText,
   }) : super(key: key);
   final TextEditingController controller;
   final Function(String)? onChanged;
   final String hintText;
+  final bool? obscureText;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextFormField(
+      //obscureText: obscureText,
       controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(

@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instx/futures/auth/signin/forget_password/bloc/forget_password_bloc.dart';
 
 import 'package:instx/ui/components/custom_text_field.dart';
 
@@ -16,56 +18,64 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            title: Text(
-              'Sign in',
-              style: TextStyle(color: Colors.white),
+    return BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                const SliverAppBar(
+                  title: Text(
+                    'Forget password',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Forget password',
+                          style: theme.textTheme.displaySmall,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextField(
+                          controller: emailTextController,
+                          hintText: 'email',
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            bottomNavigationBar: BottomAppBar(
+              color: theme.scaffoldBackgroundColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'Create account',
-                    style: theme.textTheme.displaySmall,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    controller: emailTextController,
-                    hintText: 'email',
-                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<ForgetPasswordBloc>()
+                            .add(ForgetPasswordEvent(emailTextController.text));
+                      },
+                      child: const Text('forget password'))
                 ],
               ),
             ),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: theme.scaffoldBackgroundColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              child: Text(
-                'Forget password?',
-                style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
-              ),
-              onTap: () {},
-            ),
-            ElevatedButton(
-                onPressed: () {}, child: const Text('Create account'))
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -45,7 +45,7 @@ class _ProvideBlocState extends State<ProvideBloc> {
               RegistrationBloc(abstractAuthRepository: userRepository),
           child: const RegistrationPage()),
       BlocProvider(
-          create: (_) => ForgetPasswordBloc(),
+          create: (_) => ForgetPasswordBloc(userRepository),
           child: const ForgetPasswordPage())
     ], child: widget.child);
   }

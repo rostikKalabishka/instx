@@ -57,9 +57,7 @@ class DrawerWidget extends StatelessWidget {
                 ),
               ),
               onTap: () async {
-                context.read<AuthBloc>().add(LogOut());
-                AutoRouter.of(context).pushAndPopUntil(const LoaderRoute(),
-                    predicate: (route) => false);
+                context.read<AuthBloc>().add(LogOut(context: context));
               },
             ),
           ],

@@ -33,8 +33,9 @@ class UserRepository implements AbstractAuthRepository {
   @override
   Future login({required String password, required String email}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final boba = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      print(boba);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         log('No user found for that email.');
