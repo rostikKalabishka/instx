@@ -2,15 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'user.g.dart';
 
-class UserModelField {
-  static const String uid = 'uid';
-  static const String password = 'password';
-  static const String email = 'email';
-  static const String username = 'username';
-  static const String imageUrl = 'imageUrl';
-  static const String createAt = 'createAt';
-}
-
 @JsonSerializable()
 class UserModel extends Equatable {
   final String uid;
@@ -55,4 +46,13 @@ class UserModel extends Equatable {
       _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+}
+
+class UserModelField {
+  static const String uid = 'uid';
+  static const String password = 'password';
+  static const String email = 'email';
+  static const String username = 'username';
+  static const String imageUrl = 'imageUrl';
+  static const String createAt = 'createAt';
 }

@@ -22,9 +22,26 @@ class PostModel extends Equatable {
     required this.likeCount,
   });
 
+  static final emptyPost = PostModel(
+      createAt: DateTime.now(),
+      userModel: UserModel.userEmpty,
+      postId: '',
+      imageUrl: '',
+      post: '',
+      likeCount: 0);
+
   factory PostModel.fromJson(Map<String, dynamic> json) =>
       _$PostModelFromJson(json);
-  Map<String, dynamic> toJson() => _$PostModelToJson(this);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'userModel': userModel.toJson(),
+        'postId': postId,
+        'imageUrl': imageUrl,
+        'createAt': createAt.toIso8601String(),
+        'post': post,
+        'likeCount': likeCount,
+      };
+
   @override
   List<Object?> get props =>
       [userModel, postId, imageUrl, createAt, post, likeCount];

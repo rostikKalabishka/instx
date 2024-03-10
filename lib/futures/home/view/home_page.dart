@@ -7,8 +7,7 @@ import 'package:instx/futures/home/widget/drawer_widget.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.userId});
-  final String userId;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();

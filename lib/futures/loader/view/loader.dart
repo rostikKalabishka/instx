@@ -34,7 +34,7 @@ class _LoaderPageState extends State<LoaderPage> {
 
 void navigateTo(BuildContext context, AuthState state) {
   if (state.status == UserAuthStatus.auth && state.userId.isNotEmpty) {
-    final loadNextPage = HomeRoute(userId: state.userId);
+    const loadNextPage = HomeRoute();
     AutoRouter.of(context).pushAndPopUntil(
         loadNextPage as PageRouteInfo<dynamic>,
         predicate: (route) => false);

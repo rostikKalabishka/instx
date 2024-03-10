@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/domain/repositories/post_repository/post_repository.dart';
 import 'package:instx/domain/repositories/user_repository/user_repository.dart';
+import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 
 import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/futures/auth/registration/bloc/registration_bloc.dart';
 import 'package:instx/futures/auth/signin/bloc/sign_in_bloc.dart';
 import 'package:instx/futures/auth/signin/forget_password/bloc/forget_password_bloc.dart';
+import 'package:instx/futures/post/bloc/post_bloc.dart';
 
 import '../../futures/auth/auth_page.dart';
 import '../../futures/auth/signin/forget_password/forget_password.dart';
+import '../../futures/profile/bloc/profile_bloc.dart';
 
 class ProvideBloc extends StatefulWidget {
   const ProvideBloc({Key? key, required this.child, required this.dio})
@@ -42,7 +45,13 @@ class _ProvideBlocState extends State<ProvideBloc> {
           child: const RegistrationPage()),
       BlocProvider(
           create: (_) => ForgetPasswordBloc(userRepository),
-          child: const ForgetPasswordPage())
+          child: const ForgetPasswordPage()),
+      BlocProvider(create: (_) => PostBloc(postRepository, userRepository)),
+      BlocProvider(create: (_) => AllPostBloc(postRepository)),
+      BlocProvider(
+          create: (_) => ProfileBloc(
+              abstractAuthRepository: userRepository,
+              abstractPostRepository: postRepository))
     ], child: widget.child);
   }
 }

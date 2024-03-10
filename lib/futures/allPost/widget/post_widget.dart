@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({super.key});
+  const PostWidget({super.key, required this.postModel});
+  final PostModel postModel;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +20,12 @@ class PostWidget extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start, // Підняти вгору
               children: [
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start, // Підняти вгору
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg'),
+                      backgroundImage:
+                          NetworkImage(postModel.userModel.imageUrl),
                       radius: 20,
                     ),
                   ],
@@ -37,24 +39,26 @@ class PostWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'Name bobasdasda sdasd',
+                        postModel.userModel.username,
                         style: theme.textTheme.subtitle1,
                       ),
                       Text(
-                        'adsas asdasd d asdas da sadas das dfviofodgjp udfghd oif ovpdhfguiodf dsafhdsofhsdio fsduifosdg fsiod fgsuidfsdgiu',
+                        postModel.post,
                         style: theme.textTheme.bodyText1,
                       ),
                       const SizedBox(height: 10),
-                      AspectRatio(
-                        aspectRatio:
-                            1.6, // Adjust this value to control the image's aspect ratio (width / height)
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.network(
-                              'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg',
-                              fit: BoxFit.cover),
-                        ),
-                      ),
+                      postModel.imageUrl.isNotEmpty
+                          ? AspectRatio(
+                              aspectRatio:
+                                  1.6, // Adjust this value to control the image's aspect ratio (width / height)
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                    'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg',
+                                    fit: BoxFit.cover),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

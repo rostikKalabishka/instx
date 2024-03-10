@@ -28,7 +28,7 @@ class DrawerWidget extends StatelessWidget {
               ),
               onTap: () {
                 AutoRouter.of(context).push(
-                  const ProfileRoute(),
+                  ProfileRoute(userId: context.read<AuthBloc>().state.userId),
                 );
               },
             ),

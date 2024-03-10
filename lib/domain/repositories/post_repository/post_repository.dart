@@ -6,14 +6,14 @@ import 'package:instx/domain/repositories/post_repository/models/post_model.dart
 import 'package:uuid/uuid.dart';
 
 class PostRepository implements AbstractPostRepository {
-  final usersCollection = FirebaseFirestore.instance.collection('post');
+  final postCollection = FirebaseFirestore.instance.collection('post');
   @override
   Future<PostModel> createPost(PostModel postModel) async {
     try {
       postModel = postModel.copyWith(
           createAt: DateTime.now(), postId: const Uuid().v1());
 
-      await usersCollection.doc(postModel.postId).set(postModel.toJson());
+      await postCollection.doc(postModel.postId).set(postModel.toJson());
       return postModel;
     } catch (e) {
       log(e.toString());
@@ -25,7 +25,7 @@ class PostRepository implements AbstractPostRepository {
   @override
   Future<List<PostModel>> getAllPost() async {
     try {
-      return usersCollection.get().then((value) =>
+      return postCollection.get().then((value) =>
           value.docs.map((e) => PostModel.fromJson(e.data())).toList());
     } catch (e) {
       log(e.toString());
@@ -38,9 +38,14 @@ class PostRepository implements AbstractPostRepository {
   Future<List<PostModel>> getAllPostCurrentUser(
       {required String userId}) async {
     try {
-      return usersCollection.where('userId', isEqualTo: userId).get().then(
-          (value) =>
+      final postsCurrentUser = await postCollection
+          .where('userModel.uid', isEqualTo: userId)
+          .get()
+          .then((value) =>
               value.docs.map((e) => PostModel.fromJson(e.data())).toList());
+
+      print(postsCurrentUser);
+      return postsCurrentUser;
     } catch (e) {
       log(e.toString());
 
