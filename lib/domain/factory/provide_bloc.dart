@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instx/domain/repositories/post_repository/post_repository.dart';
 import 'package:instx/domain/repositories/user_repository/user_repository.dart';
 
 import 'package:instx/futures/auth/bloc/auth_bloc.dart';
@@ -21,13 +22,8 @@ class ProvideBloc extends StatefulWidget {
 }
 
 class _ProvideBlocState extends State<ProvideBloc> {
-  late UserRepository userRepository;
-
-  @override
-  void initState() {
-    super.initState();
-    userRepository = UserRepository(dio: widget.dio);
-  }
+  final UserRepository userRepository = UserRepository();
+  final PostRepository postRepository = PostRepository();
 
   @override
   Widget build(BuildContext context) {

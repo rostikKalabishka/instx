@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -14,10 +14,9 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 class UserRepository implements AbstractAuthRepository {
   UserRepository({
     FirebaseAuth? firebaseAuth,
-    required this.dio,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
   final FirebaseAuth _firebaseAuth;
-  final Dio dio;
+
   final usersCollection = FirebaseFirestore.instance.collection('users');
 
   @override
