@@ -20,7 +20,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   })  : _abstractAuthRepository = abstractAuthRepository,
         super(const AuthState()) {
     _userSubscription = _abstractAuthRepository.user.listen((user) {
-      print(user.toString());
       add(AuthenticationUserChanged(user));
     });
     on<AuthEvent>((event, emit) async {
@@ -64,7 +63,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       autoRouter.pushAndPopUntil(const LoaderRoute(),
           predicate: (route) => false);
     } catch (e) {
-      print(e.toString());
       emit(state.copyWith(
         error: e,
       ));
@@ -115,7 +113,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     } catch (e) {
-      print(e);
       emit(state.copyWith(error: e, status: UserAuthStatus.unauth));
     }
   }

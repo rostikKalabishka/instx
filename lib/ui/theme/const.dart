@@ -11,4 +11,5 @@ class AppConst {
 
   static const String googleSvg = 'assets/svg/google.svg';
   static const String appleSvg = 'assets/svg/apple.svg';
+  static const String userPlaceholder = 'assets/images/user_placeholder.jpg';
 }

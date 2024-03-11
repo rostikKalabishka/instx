@@ -44,7 +44,6 @@ class PostRepository implements AbstractPostRepository {
           .then((value) =>
               value.docs.map((e) => PostModel.fromJson(e.data())).toList());
 
-      print(postsCurrentUser);
       return postsCurrentUser;
     } catch (e) {
       log(e.toString());

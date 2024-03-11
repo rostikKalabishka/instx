@@ -21,3 +21,32 @@ class CreatePostEvent extends PostEvent {
         imageUrl,
       ];
 }
+
+class LoadInfoEvent extends PostEvent {
+  final String userId;
+
+  const LoadInfoEvent({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+}
+
+class SelectImageEvent extends PostEvent {
+  final double maxHeight;
+  final double maxWidth;
+  final int imageQuality;
+  final Color toolbarWidgetColor;
+  final Color toolbarColor;
+
+  const SelectImageEvent({
+    required this.imageQuality,
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.toolbarWidgetColor,
+    required this.toolbarColor,
+  });
+
+  @override
+  List<Object> get props =>
+      [maxHeight, maxWidth, imageQuality, toolbarColor, toolbarWidgetColor];
+}

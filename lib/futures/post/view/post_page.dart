@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instx/futures/post/bloc/post_bloc.dart';
 import 'package:instx/router/router.dart';
+import 'package:instx/ui/theme/const.dart';
 
 @RoutePage()
 class PostPage extends StatefulWidget {
@@ -19,6 +20,12 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   final postController = TextEditingController();
   bool _isPanelAbove = false;
+
+  @override
+  void initState() {
+    context.read<PostBloc>().add(LoadInfoEvent(userId: widget.userId));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +52,8 @@ class _PostPageState extends State<PostPage> {
                               context.read<PostBloc>().add(CreatePostEvent(
                                   userId: widget.userId,
                                   post: postController.text,
-                                  imageUrl: ''));
-                              AutoRouter.of(context).push(HomeRoute());
+                                  imageUrl: state.imagePost));
+                              AutoRouter.of(context).push(const HomeRoute());
                             },
                             child: const Text('Publish'),
                           ),
@@ -61,11 +68,15 @@ class _PostPageState extends State<PostPage> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 5),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
                                   child: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg'),
+                                    backgroundImage: state
+                                            .userModel.imageUrl.isNotEmpty
+                                        ? NetworkImage(state.userModel.imageUrl)
+                                        : const AssetImage(
+                                                AppConst.userPlaceholder)
+                                            as ImageProvider<Object>,
                                     radius: 20,
                                   ),
                                 ),
@@ -102,8 +113,9 @@ class _PostPageState extends State<PostPage> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    Image.network(
-                                        'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg')
+                                    state.imagePost.isNotEmpty
+                                        ? Image.asset(state.imagePost)
+                                        : const SizedBox.shrink()
                                   ],
                                 )),
                               ],
@@ -138,9 +150,15 @@ class _PostPageState extends State<PostPage> {
                             right: 15,
                           ),
                           child: GestureDetector(
-                            onTap: () {},
-                            child:
-                                const Icon(FontAwesomeIcons.glassWaterDroplet),
+                            onTap: () {
+                              context.read<PostBloc>().add(SelectImageEvent(
+                                  imageQuality: 40,
+                                  maxWidth: 500,
+                                  maxHeight: 500,
+                                  toolbarWidgetColor: Colors.white,
+                                  toolbarColor: theme.colorScheme.primary));
+                            },
+                            child: const Icon(Icons.attachment_rounded),
                           ),
                         ),
                         Padding(

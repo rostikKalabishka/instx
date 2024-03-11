@@ -1,8 +1,8 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/domain/repositories/post_repository/abstract_post_repository.dart';
 import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
-import 'package:instx/domain/repositories/post_repository/post_repository.dart';
+
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';

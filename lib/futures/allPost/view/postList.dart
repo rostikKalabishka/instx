@@ -10,7 +10,6 @@ import 'package:instx/router/router.dart';
 class PostListPage extends StatefulWidget {
   const PostListPage({super.key});
 
-  // final String userId;
   @override
   State<PostListPage> createState() => _PostListPageState();
 }
@@ -28,36 +27,40 @@ class _PostListPageState extends State<PostListPage> {
     return BlocBuilder<AllPostBloc, AllPostState>(
       builder: (context, state) {
         if (state.status == StatusPage.loaded) {
-          return Scaffold(
-            floatingActionButton: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
-              backgroundColor: theme.colorScheme.secondary,
-              onPressed: () async {
-                print(context.read<AuthBloc>().state.userId);
-                AutoRouter.of(context).push(
-                    PostRoute(userId: context.read<AuthBloc>().state.userId));
-              },
-              child: Icon(
-                FontAwesomeIcons.plus,
-                color: theme.iconTheme.color,
+          return RefreshIndicator.adaptive(
+            onRefresh: () async {
+              context.read<AllPostBloc>().add(AllPostLoaded());
+            },
+            child: Scaffold(
+              floatingActionButton: FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                backgroundColor: theme.colorScheme.secondary,
+                onPressed: () async {
+                  AutoRouter.of(context).push(
+                      PostRoute(userId: context.read<AuthBloc>().state.userId));
+                },
+                child: Icon(
+                  FontAwesomeIcons.plus,
+                  color: theme.iconTheme.color,
+                ),
               ),
-            ),
-            body: CustomScrollView(
-              slivers: [
-                SliverList.separated(
-                  itemCount: state.postList.length,
-                  itemBuilder: (context, index) {
-                    final post = state.postList[index];
-                    return PostWidget(
-                      postModel: post,
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider();
-                  },
-                )
-              ],
+              body: CustomScrollView(
+                slivers: [
+                  SliverList.separated(
+                    itemCount: state.postList.length,
+                    itemBuilder: (context, index) {
+                      final post = state.postList[index];
+                      return PostWidget(
+                        postModel: post,
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider();
+                    },
+                  )
+                ],
+              ),
             ),
           );
         } else if (state.status == StatusPage.failure) {

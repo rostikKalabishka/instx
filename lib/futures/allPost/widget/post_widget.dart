@@ -1,7 +1,11 @@
+import 'package:auto_route/auto_route.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
+import 'package:instx/router/router.dart';
+import 'package:instx/ui/theme/const.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.postModel});
@@ -18,15 +22,23 @@ class PostWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start, // Підняти вгору
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Підняти вгору
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(postModel.userModel.imageUrl),
-                      radius: 20,
+                    GestureDetector(
+                      onTap: () {
+                        AutoRouter.of(context).push(
+                            ProfileRoute(userId: postModel.userModel.uid));
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: postModel.userModel.imageUrl.isNotEmpty
+                            ? NetworkImage(postModel.userModel.imageUrl)
+                            : const AssetImage(AppConst.userPlaceholder)
+                                as ImageProvider<Object>,
+                        radius: 20,
+                      ),
                     ),
                   ],
                 ),
@@ -38,9 +50,15 @@ class PostWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        postModel.userModel.username,
-                        style: theme.textTheme.subtitle1,
+                      GestureDetector(
+                        onTap: () {
+                          AutoRouter.of(context).push(
+                              ProfileRoute(userId: postModel.userModel.uid));
+                        },
+                        child: Text(
+                          postModel.userModel.username,
+                          style: theme.textTheme.subtitle1,
+                        ),
                       ),
                       Text(
                         postModel.post,
@@ -49,12 +67,10 @@ class PostWidget extends StatelessWidget {
                       const SizedBox(height: 10),
                       postModel.imageUrl.isNotEmpty
                           ? AspectRatio(
-                              aspectRatio:
-                                  1.6, // Adjust this value to control the image's aspect ratio (width / height)
+                              aspectRatio: 1.6,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
-                                child: Image.network(
-                                    'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg',
+                                child: Image.asset(postModel.imageUrl,
                                     fit: BoxFit.cover),
                               ),
                             )
@@ -65,35 +81,48 @@ class PostWidget extends StatelessWidget {
                         children: [
                           TextButton(
                               onPressed: () {},
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(FontAwesomeIcons.heart),
-                                  SizedBox(
+                                  Icon(
+                                    FontAwesomeIcons.heart,
+                                    color: theme.colorScheme.secondary,
+                                  ),
+                                  const SizedBox(
                                     width: 3,
                                   ),
-                                  Text('25')
+                                  Text(postModel.likeCount.toString(),
+                                      style: theme.textTheme.subtitle1)
                                 ],
                               )),
                           TextButton(
                               onPressed: () {},
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(FontAwesomeIcons.marsStroke),
-                                  SizedBox(
+                                  Icon(
+                                    FontAwesomeIcons.marsStroke,
+                                    color: theme.colorScheme.secondary,
+                                  ),
+                                  const SizedBox(
                                     width: 3,
                                   ),
-                                  Text('2')
+                                  Text(
+                                    '2',
+                                    style: theme.textTheme.subtitle1,
+                                  )
                                 ],
                               )),
                           TextButton(
                               onPressed: () {},
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(FontAwesomeIcons.comment),
-                                  SizedBox(
+                                  Icon(
+                                    FontAwesomeIcons.comment,
+                                    color: theme.colorScheme.secondary,
+                                  ),
+                                  const SizedBox(
                                     width: 3,
                                   ),
-                                  Text('2')
+                                  Text('2', style: theme.textTheme.subtitle1)
                                 ],
                               )),
                         ],

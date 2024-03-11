@@ -4,8 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 import 'package:instx/futures/allPost/widget/post_widget.dart';
+import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/futures/profile/bloc/profile_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:instx/ui/theme/const.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget {
@@ -42,13 +43,23 @@ class _ProfilePageState extends State<ProfilePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  'https://t3.ftcdn.net/jpg/04/49/19/08/360_F_449190831_i2whvIQdDIGtuIVWT6QfenWwmRApVJ5l.jpg'),
+                            CircleAvatar(
+                              backgroundImage: state
+                                      .userModel.imageUrl.isNotEmpty
+                                  ? NetworkImage(state.userModel.imageUrl)
+                                  : const AssetImage(AppConst.userPlaceholder)
+                                      as ImageProvider<Object>,
                               radius: 30,
                             ),
-                            OutlinedButton(
-                                onPressed: () {}, child: Text('data ads'))
+                            context.read<AuthBloc>().state.userId ==
+                                    widget.userId
+                                ? OutlinedButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      'Redact Profile',
+                                      style: theme.textTheme.labelLarge,
+                                    ))
+                                : const SizedBox.shrink()
                           ],
                         ),
                         const SizedBox(
@@ -105,18 +116,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-                SliverList.separated(
-                  itemCount: state.postList.length,
-                  itemBuilder: ((context, index) {
-                    final post = state.postList[index];
-                    return PostWidget(
-                      postModel: post,
-                    );
-                  }),
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider();
-                  },
-                )
+                state.postList.isEmpty
+                    ? const SliverToBoxAdapter(
+                        child: Center(
+                          child: Text('Don`t have post`s'),
+                        ),
+                      )
+                    : SliverList.separated(
+                        itemCount: state.postList.length,
+                        itemBuilder: ((context, index) {
+                          final post = state.postList[index];
+                          return PostWidget(
+                            postModel: post,
+                          );
+                        }),
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider();
+                        },
+                      )
               ],
             ),
           );
