@@ -27,6 +27,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         await _loadInfo(event, emit);
       } else if (event is SelectImageEvent) {
         await _selectImageEvent(event, emit);
+      } else if (event is RemoveImage) {
+        await _removeImageFromList(event, emit);
       }
     });
   }
@@ -36,9 +38,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           await _abstractAuthRepository.getUserById(userId: event.userId);
 
       PostModel postModel = PostModel.emptyPost.copyWith(
-          userModel: userModel, post: event.post, imageUrl: event.imageUrl);
+          userModel: userModel,
+          post: event.post,
+          imageUrlList: event.imagePostList);
       await _abstractPostRepository.createPost(postModel);
-      emit(state.copyWith(imagePost: ''));
+      emit(state.copyWith(imagePostList: []));
     } catch (e) {
       emit(state.copyWith(error: e));
     }
@@ -52,7 +56,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       );
 
       emit(state.copyWith(
-          status: UserAuthStatus.loaded, userModel: userModel, imagePost: ''));
+          status: UserAuthStatus.loaded,
+          userModel: userModel,
+          imagePostList: []));
     } catch (e) {
       emit(state.copyWith(error: e, status: UserAuthStatus.failure));
     }
@@ -60,6 +66,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<void> _selectImageEvent(SelectImageEvent event, emit) async {
     try {
+      List<String> listImages = state.imagePostList;
+
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
           source: ImageSource.gallery,
@@ -84,9 +92,24 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           ],
         );
         if (croppedFile != null) {
-          emit(state.copyWith(imagePost: croppedFile.path));
+          List<String> updateListImages = List.from(listImages);
+          updateListImages.add(croppedFile.path);
+
+          emit(state.copyWith(imagePostList: updateListImages));
         }
       }
+    } catch (e) {
+      emit(state.copyWith(error: e, status: UserAuthStatus.failure));
+    }
+  }
+
+  Future<void> _removeImageFromList(RemoveImage event, emit) async {
+    try {
+      List<String> listImages = state.imagePostList;
+
+      List<String> updateListImages = List.from(listImages);
+      updateListImages.remove(event.image);
+      emit(state.copyWith(imagePostList: updateListImages));
     } catch (e) {
       emit(state.copyWith(error: e, status: UserAuthStatus.failure));
     }

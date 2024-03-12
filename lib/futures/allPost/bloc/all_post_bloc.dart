@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:instx/domain/repositories/post_repository/abstract_post_repository.dart';
@@ -25,6 +27,7 @@ class AllPostBloc extends Bloc<AllPostEvent, AllPostState> {
 
     try {
       final allPost = await _abstractPostRepository.getAllPost();
+
       emit(state.copyWith(status: StatusPage.loaded, postList: allPost));
     } catch (e) {
       emit(state.copyWith(status: StatusPage.failure, error: e));

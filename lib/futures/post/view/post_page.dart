@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -52,7 +55,7 @@ class _PostPageState extends State<PostPage> {
                               context.read<PostBloc>().add(CreatePostEvent(
                                   userId: widget.userId,
                                   post: postController.text,
-                                  imageUrl: state.imagePost));
+                                  imagePostList: state.imagePostList));
                               AutoRouter.of(context).push(const HomeRoute());
                             },
                             child: const Text('Publish'),
@@ -113,9 +116,54 @@ class _PostPageState extends State<PostPage> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    state.imagePost.isNotEmpty
-                                        ? Image.asset(state.imagePost)
-                                        : const SizedBox.shrink()
+                                    if (state.imagePostList.isNotEmpty)
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.24,
+                                        child: ListView.builder(
+                                            itemCount:
+                                                state.imagePostList.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: Stack(
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      child: Image.asset(
+                                                          width: 200,
+                                                          height: 300,
+                                                          state.imagePostList[
+                                                              index]),
+                                                    ),
+                                                    Positioned(
+                                                        right: 1,
+                                                        top: 1,
+                                                        child: IconButton(
+                                                          icon: const Icon(
+                                                              Icons.close),
+                                                          onPressed: () {
+                                                            context
+                                                                .read<
+                                                                    PostBloc>()
+                                                                .add(RemoveImage(
+                                                                    image: state
+                                                                            .imagePostList[
+                                                                        index]));
+                                                          },
+                                                        ))
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                      )
+                                    else
+                                      const SizedBox.shrink()
                                   ],
                                 )),
                               ],
@@ -134,8 +182,9 @@ class _PostPageState extends State<PostPage> {
                   right: 0,
                   child: Container(
                     padding: const EdgeInsets.only(bottom: 10),
-                    decoration: const BoxDecoration(
-                      border: Border(
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBackgroundColor,
+                      border: const Border(
                         top: BorderSide(
                           color: Colors.grey,
                           width: 0.3,

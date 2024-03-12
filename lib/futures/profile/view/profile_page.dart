@@ -80,7 +80,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 20,
                         ),
                         Text(
-                          'zxc zxxc dasdasd dasda sd dasdsadsa d sadasdasdasd',
+                          state.userModel.status.isNotEmpty
+                              ? state.userModel.status
+                              : 'No have status',
                           style: theme.textTheme.labelLarge,
                         ),
                         const SizedBox(
@@ -103,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               width: 5,
                             ),
                             Text(
-                              state.userModel.createAt,
+                              state.userModel.createAt.toString(),
                               style: theme.textTheme.labelLarge,
                             )
                           ],
@@ -117,9 +119,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 state.postList.isEmpty
-                    ? const SliverToBoxAdapter(
+                    ? SliverToBoxAdapter(
                         child: Center(
-                          child: Text('Don`t have post`s'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'This user doesn`t have any post',
+                              style: theme.textTheme.displaySmall,
+                            ),
+                          ),
                         ),
                       )
                     : SliverList.separated(

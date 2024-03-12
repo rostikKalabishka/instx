@@ -9,16 +9,16 @@ sealed class PostEvent extends Equatable {
 
 class CreatePostEvent extends PostEvent {
   const CreatePostEvent(
-      {required this.userId, required this.post, required this.imageUrl});
+      {required this.userId, required this.post, required this.imagePostList});
   final String userId;
   final String post;
-  final String imageUrl;
+  final List<String> imagePostList;
 
   @override
   List<Object> get props => [
         userId,
         post,
-        imageUrl,
+        imagePostList,
       ];
 }
 
@@ -49,4 +49,13 @@ class SelectImageEvent extends PostEvent {
   @override
   List<Object> get props =>
       [maxHeight, maxWidth, imageQuality, toolbarColor, toolbarWidgetColor];
+}
+
+class RemoveImage extends PostEvent {
+  final String image;
+
+  const RemoveImage({required this.image});
+
+  @override
+  List<Object> get props => [image];
 }

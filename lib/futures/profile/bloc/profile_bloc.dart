@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/domain/repositories/post_repository/abstract_post_repository.dart';
@@ -29,12 +31,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(state.copyWith(
       statusPage: StatusPage.loading,
     ));
+
     try {
       final UserModel userModel =
           await _abstractAuthRepository.getUserById(userId: event.userId);
 
       final userPostList = await _abstractPostRepository.getAllPostCurrentUser(
           userId: event.userId);
+
       emit(state.copyWith(
           statusPage: StatusPage.loaded,
           userModel: userModel,

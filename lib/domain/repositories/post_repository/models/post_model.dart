@@ -8,27 +8,30 @@ part 'post_model.g.dart';
 class PostModel extends Equatable {
   final UserModel userModel;
   final String postId;
-  final String imageUrl;
+  final List<String> imageUrlList;
   final DateTime createAt;
   final String post;
-  final int likeCount;
+  final List<String> likeUsers;
+  final List<String> commentList;
 
   const PostModel({
     required this.userModel,
     required this.postId,
-    required this.imageUrl,
+    required this.imageUrlList,
     required this.createAt,
     required this.post,
-    required this.likeCount,
+    required this.likeUsers,
+    required this.commentList,
   });
 
   static final emptyPost = PostModel(
       createAt: DateTime.now(),
       userModel: UserModel.userEmpty,
       postId: '',
-      imageUrl: '',
+      imageUrlList: const [],
       post: '',
-      likeCount: 0);
+      commentList: const [],
+      likeUsers: const []);
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>
       _$PostModelFromJson(json);
@@ -36,31 +39,34 @@ class PostModel extends Equatable {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'userModel': userModel.toJson(),
         'postId': postId,
-        'imageUrl': imageUrl,
+        'imageUrlList': imageUrlList,
         'createAt': createAt.toIso8601String(),
         'post': post,
-        'likeCount': likeCount,
+        'commentList': commentList,
+        'likeUsers': likeUsers,
       };
 
   @override
   List<Object?> get props =>
-      [userModel, postId, imageUrl, createAt, post, likeCount];
+      [userModel, postId, imageUrlList, createAt, post, likeUsers];
 
   PostModel copyWith({
     UserModel? userModel,
     String? postId,
-    String? imageUrl,
+    List<String>? imageUrlList,
     DateTime? createAt,
     String? post,
-    int? likeCount,
+    List<String>? likeUsers,
+    List<String>? commentList,
   }) {
     return PostModel(
       userModel: userModel ?? this.userModel,
       postId: postId ?? this.postId,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageUrlList: imageUrlList ?? this.imageUrlList,
       createAt: createAt ?? this.createAt,
       post: post ?? this.post,
-      likeCount: likeCount ?? this.likeCount,
+      likeUsers: likeUsers ?? this.likeUsers,
+      commentList: commentList ?? this.commentList,
     );
   }
 }

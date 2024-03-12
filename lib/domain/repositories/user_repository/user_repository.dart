@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
+import 'package:intl/intl.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class UserRepository implements AbstractAuthRepository {
@@ -114,7 +115,7 @@ class UserRepository implements AbstractAuthRepository {
         final existingDoc = await userDoc.get();
         if (!existingDoc.exists) {
           UserModel myUser = UserModel.userEmpty.copyWith(
-              createAt: DateTime.now().toString(),
+              createAt: DateFormat.yMMMMd().format(DateTime.now()),
               email: userCredential.user?.email,
               uid: userCredential.user?.uid,
               username: userCredential.user?.displayName,
