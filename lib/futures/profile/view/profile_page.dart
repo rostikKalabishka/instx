@@ -1,11 +1,14 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 import 'package:instx/futures/allPost/widget/post_widget.dart';
 import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/futures/profile/bloc/profile_bloc.dart';
+import 'package:instx/ui/components/show_modal_menu_bottom_sheet.dart';
 import 'package:instx/ui/theme/const.dart';
 
 @RoutePage()
@@ -54,7 +57,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             context.read<AuthBloc>().state.userId ==
                                     widget.userId
                                 ? OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await showModalMenuBottomSheet(
+                                          context: context,
+                                          modalHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.9,
+                                          child: UpdateUserInfoWidget(
+                                            state: state,
+                                          ));
+                                    },
                                     child: Text(
                                       'Redact Profile',
                                       style: theme.textTheme.labelLarge,
@@ -109,6 +122,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: theme.textTheme.labelLarge,
                             )
                           ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Followers: ${state.userModel.followers.length}',
+                          style: theme.textTheme.labelLarge,
                         ),
                         const SizedBox(
                           height: 10,
@@ -169,6 +189,164 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         }
       },
+    );
+  }
+}
+
+class UpdateUserInfoWidget extends StatefulWidget {
+  const UpdateUserInfoWidget({super.key, required this.state});
+  final ProfileState state;
+  @override
+  State<UpdateUserInfoWidget> createState() => _UpdateUserInfoWidgetState();
+}
+
+class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
+  late TextEditingController userNameController;
+  late TextEditingController statusController;
+  bool isVisibleButton = false;
+
+  @override
+  void initState() {
+    userNameController =
+        TextEditingController(text: widget.state.userModel.username);
+    statusController =
+        TextEditingController(text: widget.state.userModel.status);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = widget.state;
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.28,
+                  child: GestureDetector(
+                    child: Text(
+                      'Cancel',
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    onTap: () {
+                      AutoRouter.of(context).pop();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text('Redact Profile',
+                      style: theme.textTheme.headlineSmall),
+                ),
+                isVisibleButton
+                    ? Expanded(
+                        child: GestureDetector(
+                          child:
+                              Text('Update', style: theme.textTheme.titleSmall),
+                          onTap: () {
+                            context.read<ProfileBloc>().add(UpdateUserInfoEvent(
+                                updateUserName: userNameController.text,
+                                updateStatus: statusController.text,
+                                context: context));
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.03,
+            ),
+            GestureDetector(
+              onTap: () {
+                context.read<ProfileBloc>().add(SelectImageEvent(
+                    imageUrl: state.newImage,
+                    maxHeight: 500,
+                    maxWidth: 500,
+                    imageQuality: 40,
+                    toolbarWidgetColor: Colors.white,
+                    toolbarColor: theme.colorScheme.primary));
+              },
+              child: CircleAvatar(
+                backgroundImage: state.newImage.isEmpty
+                    ? state.userModel.imageUrl.isNotEmpty
+                        ? NetworkImage(state.userModel.imageUrl)
+                        : const AssetImage(AppConst.userPlaceholder)
+                            as ImageProvider<Object>
+                    : NetworkImage(state.newImage),
+                radius: 30,
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            const Divider(),
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  child: Text(
+                    'Username',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (value) {
+                      if (state.userModel.username != value) {
+                        setState(() {
+                          isVisibleButton = true;
+                        });
+                      }
+                    },
+                    controller: userNameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Create post',
+                      border: InputBorder.none,
+                    ),
+                    autofocus: false,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(),
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  child: Text('Status', style: theme.textTheme.titleSmall),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (value) {
+                      if (state.userModel.status != value) {
+                        setState(() {
+                          isVisibleButton = true;
+                        });
+                      }
+                    },
+                    controller: statusController,
+                    decoration: const InputDecoration(
+                      hintText: 'Create post',
+                      border: InputBorder.none,
+                    ),
+                    autofocus: false,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(),
+          ],
+        ),
+      ),
     );
   }
 }

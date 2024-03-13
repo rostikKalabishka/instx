@@ -122,7 +122,7 @@ class PostWidget extends StatelessWidget {
                                 width: 3,
                               ),
                               Text(
-                                '2',
+                                '0',
                                 style: theme.textTheme.subtitle1,
                               ),
                             ],
@@ -140,7 +140,7 @@ class PostWidget extends StatelessWidget {
                                 width: 3,
                               ),
                               Text(
-                                '2',
+                                postModel.commentList.length.toString(),
                                 style: theme.textTheme.subtitle1,
                               ),
                             ],

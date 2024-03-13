@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
+import 'dart:io' show File;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
