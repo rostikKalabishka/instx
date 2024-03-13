@@ -107,7 +107,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(
           statusPage: StatusPage.loaded,
           userModel: userModel,
-          newImage: userModel.imageUrl,
+          newImage: '',
           postList: userPostList));
     } catch (e) {
       emit(state.copyWith(statusPage: StatusPage.failure, error: e));
