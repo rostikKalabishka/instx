@@ -11,7 +11,7 @@ class AllPostState extends Equatable {
 
   final StatusPage status;
 
-  final List<PostModel> postList;
+  final List<LocalEntityPost> postList;
 
   @override
   List<Object> get props => [error, status, postList];
@@ -19,7 +19,7 @@ class AllPostState extends Equatable {
   AllPostState copyWith({
     Object? error,
     StatusPage? status,
-    List<PostModel>? postList,
+    List<LocalEntityPost>? postList,
   }) {
     return AllPostState(
       error: error ?? this.error,

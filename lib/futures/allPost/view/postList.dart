@@ -17,7 +17,9 @@ class PostListPage extends StatefulWidget {
 class _PostListPageState extends State<PostListPage> {
   @override
   void initState() {
-    context.read<AllPostBloc>().add(AllPostLoaded());
+    context
+        .read<AllPostBloc>()
+        .add(AllPostLoaded(userId: context.read<AuthBloc>().state.userId));
     super.initState();
   }
 
@@ -29,7 +31,8 @@ class _PostListPageState extends State<PostListPage> {
         if (state.status == StatusPage.loaded) {
           return RefreshIndicator.adaptive(
             onRefresh: () async {
-              context.read<AllPostBloc>().add(AllPostLoaded());
+              context.read<AllPostBloc>().add(
+                  AllPostLoaded(userId: context.read<AuthBloc>().state.userId));
             },
             child: Scaffold(
               floatingActionButton: FloatingActionButton(
@@ -52,7 +55,8 @@ class _PostListPageState extends State<PostListPage> {
                     itemBuilder: (context, index) {
                       final post = state.postList[index];
                       return PostWidget(
-                        postModel: post,
+                        localEntityPost: post,
+                        index: index,
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {
@@ -72,7 +76,8 @@ class _PostListPageState extends State<PostListPage> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                       onPressed: () {
-                        context.read<AllPostBloc>().add(AllPostLoaded());
+                        context.read<AllPostBloc>().add(AllPostLoaded(
+                            userId: context.read<AuthBloc>().state.userId));
                       },
                       child: const Text('Reload'))
                 ],

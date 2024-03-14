@@ -155,7 +155,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         itemBuilder: ((context, index) {
                           final post = state.postList[index];
                           return PostWidget(
-                            postModel: post,
+                            localEntityPost: post,
+                            index: index,
                           );
                         }),
                         separatorBuilder: (BuildContext context, int index) {
@@ -174,7 +175,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                       onPressed: () {
-                        context.read<AllPostBloc>().add(AllPostLoaded());
+                        context.read<AllPostBloc>().add(AllPostLoaded(
+                            userId: context.read<AuthBloc>().state.userId));
                       },
                       child: const Text('Reload'))
                 ],

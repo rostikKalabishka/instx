@@ -11,6 +11,7 @@ import 'package:instx/domain/repositories/post_repository/models/post_model.dart
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
+import 'package:instx/futures/allPost/local_entity/local_entity_post.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -103,12 +104,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       final userPostList = await _abstractPostRepository.getAllPostCurrentUser(
           userId: event.userId);
-
+      final localEntityPost = userPostList
+          .map(
+            (e) => LocalEntityPost(
+                postModel: e,
+                isLiked: true,
+                likeCounter: e.likeUsers.length,
+                commentCounter: e.commentList.length),
+          )
+          .toList();
       emit(state.copyWith(
           statusPage: StatusPage.loaded,
           userModel: userModel,
           newImage: '',
-          postList: userPostList));
+          postList: localEntityPost));
     } catch (e) {
       emit(state.copyWith(statusPage: StatusPage.failure, error: e));
     }

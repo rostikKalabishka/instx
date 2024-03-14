@@ -1,15 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
+import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
+import 'package:instx/futures/allPost/local_entity/local_entity_post.dart';
+import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/router/router.dart';
 import 'package:instx/ui/theme/const.dart';
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({super.key, required this.postModel});
-  final PostModel postModel;
+  const PostWidget(
+      {super.key, required this.localEntityPost, required this.index});
+  final LocalEntityPost localEntityPost;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +34,14 @@ class PostWidget extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      AutoRouter.of(context)
-                          .push(ProfileRoute(userId: postModel.userModel.uid));
+                      AutoRouter.of(context).push(ProfileRoute(
+                          userId: localEntityPost.postModel.userModel.uid));
                     },
                     child: CircleAvatar(
-                      backgroundImage: postModel.userModel.imageUrl.isNotEmpty
-                          ? NetworkImage(postModel.userModel.imageUrl)
+                      backgroundImage: localEntityPost
+                              .postModel.userModel.imageUrl.isNotEmpty
+                          ? NetworkImage(
+                              localEntityPost.postModel.userModel.imageUrl)
                           : const AssetImage(AppConst.userPlaceholder)
                               as ImageProvider<Object>,
                       radius: 20,
@@ -51,37 +59,41 @@ class PostWidget extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        AutoRouter.of(context).push(
-                            ProfileRoute(userId: postModel.userModel.uid));
+                        AutoRouter.of(context).push(ProfileRoute(
+                            userId: localEntityPost.postModel.userModel.uid));
                       },
                       child: Text(
-                        postModel.userModel.username,
+                        localEntityPost.postModel.userModel.username,
                         style: theme.textTheme.subtitle1,
                       ),
                     ),
                     Text(
-                      postModel.post,
+                      localEntityPost.postModel.post,
                       style: theme.textTheme.bodyText1,
                     ),
                     const SizedBox(height: 10),
-                    postModel.imageUrlList.isNotEmpty
+                    localEntityPost.postModel.imageUrlList.isNotEmpty
                         ? GridView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:
-                                  postModel.imageUrlList.length == 1 ? 1 : 2,
+                              crossAxisCount: localEntityPost
+                                          .postModel.imageUrlList.length ==
+                                      1
+                                  ? 1
+                                  : 2,
                               mainAxisSpacing: 15,
                               crossAxisSpacing: 15,
                               // childAspectRatio: 2.0,
                             ),
-                            itemCount: postModel.imageUrlList.length,
+                            itemCount:
+                                localEntityPost.postModel.imageUrlList.length,
                             itemBuilder: (context, index) {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                 child: Image.network(
-                                  postModel.imageUrlList[index],
+                                  localEntityPost.postModel.imageUrlList[index],
                                   fit: BoxFit.cover,
                                 ),
                               );
@@ -93,18 +105,29 @@ class PostWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.read<AllPostBloc>().add(AddOrRemoveLike(
+                                localEntityPost: localEntityPost,
+                                currentUserId:
+                                    context.read<AuthBloc>().state.userId,
+                                index: index));
+                          },
                           child: Row(
                             children: [
-                              Icon(
-                                FontAwesomeIcons.heart,
-                                color: theme.colorScheme.secondary,
-                              ),
+                              localEntityPost.isLiked
+                                  ? const Icon(
+                                      FontAwesomeIcons.heartCircleCheck,
+                                      color: Colors.red,
+                                    )
+                                  : Icon(
+                                      FontAwesomeIcons.heart,
+                                      color: theme.colorScheme.secondary,
+                                    ),
                               const SizedBox(
                                 width: 3,
                               ),
                               Text(
-                                postModel.likeUsers.length.toString(),
+                                localEntityPost.likeCounter.toString(),
                                 style: theme.textTheme.subtitle1,
                               ),
                             ],
@@ -140,7 +163,7 @@ class PostWidget extends StatelessWidget {
                                 width: 3,
                               ),
                               Text(
-                                postModel.commentList.length.toString(),
+                                localEntityPost.commentCounter.toString(),
                                 style: theme.textTheme.subtitle1,
                               ),
                             ],

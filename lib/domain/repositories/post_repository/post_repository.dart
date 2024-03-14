@@ -51,8 +51,9 @@ class PostRepository implements AbstractPostRepository {
   }
 
   @override
-  Future<List<PostModel>> getAllPostCurrentUser(
-      {required String userId}) async {
+  Future<List<PostModel>> getAllPostCurrentUser({
+    required String userId,
+  }) async {
     try {
       final postsCurrentUser = await postCollection
           .where('userModel.uid', isEqualTo: userId)
@@ -61,6 +62,56 @@ class PostRepository implements AbstractPostRepository {
               value.docs.map((e) => PostModel.fromJson(e.data())).toList());
 
       return postsCurrentUser;
+    } catch (e) {
+      log(e.toString());
+
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> addOrRemoveLikeOnPost(
+      {required PostModel postModel, required String currentUserId}) async {
+    try {
+      final postDoc = postCollection.doc(postModel.postId);
+      final postData = await postDoc.get();
+
+      final List<String> likeUsers =
+          List<String>.from(postData.data()?['likeUsers'] ?? []);
+
+      if (!likeUsers.contains(currentUserId)) {
+        likeUsers.add(currentUserId);
+      } else {
+        likeUsers.remove(currentUserId);
+      }
+      postModel = postModel.copyWith(likeUsers: likeUsers);
+      await postDoc.update(postModel.toJson());
+    } catch (e) {
+      log(e.toString());
+
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> isLiked(
+      {required PostModel postModel, required String currentUserId}) async {
+    final postDoc = postCollection.doc(postModel.postId);
+    bool isLiked = false;
+    try {
+      final postData = await postDoc.get();
+
+      final List<String> likeUsers =
+          List<String>.from(postData.data()?['likeUsers'] ?? []);
+
+      if (likeUsers.contains(currentUserId)) {
+        isLiked = true;
+      } else {
+        isLiked = false;
+      }
+      postModel = postModel.copyWith(likeUsers: likeUsers);
+      await postDoc.update(postModel.toJson());
+      return isLiked;
     } catch (e) {
       log(e.toString());
 

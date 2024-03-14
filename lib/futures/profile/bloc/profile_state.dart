@@ -9,7 +9,7 @@ class ProfileState extends Equatable {
     this.newImage = '',
   });
   final UserModel userModel;
-  final List<PostModel> postList;
+  final List<LocalEntityPost> postList;
   final StatusPage statusPage;
   final Object error;
   final String newImage;
@@ -19,7 +19,7 @@ class ProfileState extends Equatable {
 
   ProfileState copyWith({
     UserModel? userModel,
-    List<PostModel>? postList,
+    List<LocalEntityPost>? postList,
     StatusPage? statusPage,
     Object? error,
     String? newImage,
