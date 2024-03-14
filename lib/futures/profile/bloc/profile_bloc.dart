@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instx/domain/repositories/post_repository/abstract_post_repository.dart';
-import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
 
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
@@ -32,6 +31,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         await _selectImageEvent(event, emit);
       } else if (event is UpdateUserInfoEvent) {
         await _updateUserInfo(event, emit);
+      } else if (event is AddOrRemoveLikeInProfile) {
+        await _likeOrRemove(event, emit);
       }
     });
   }
@@ -94,32 +95,68 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<void> _loadedInfo(LoadedInfo event, emit) async {
-    emit(state.copyWith(
-      statusPage: StatusPage.loading,
-    ));
+    if (state.statusPage != StatusPage.loaded) {
+      emit(state.copyWith(statusPage: StatusPage.loading));
+    }
 
     try {
       final UserModel userModel =
           await _abstractAuthRepository.getUserById(userId: event.userId);
-
-      final userPostList = await _abstractPostRepository.getAllPostCurrentUser(
+      final allPost = await _abstractPostRepository.getAllPostCurrentUser(
           userId: event.userId);
-      final localEntityPost = userPostList
-          .map(
-            (e) => LocalEntityPost(
-                postModel: e,
-                isLiked: true,
-                likeCounter: e.likeUsers.length,
-                commentCounter: e.commentList.length),
-          )
-          .toList();
-      emit(state.copyWith(
-          statusPage: StatusPage.loaded,
-          userModel: userModel,
-          newImage: '',
-          postList: localEntityPost));
+
+      final List<LocalEntityPost> localEntityPosts = [];
+
+      for (final postModel in allPost) {
+        final bool isLiked = await _abstractPostRepository.isLiked(
+          postModel: postModel,
+          currentUserId: event.userId,
+        );
+        final localEntityPost = LocalEntityPost(
+            postModel: postModel,
+            isLiked: isLiked,
+            likeCounter: postModel.likeUsers.length,
+            commentCounter: postModel.commentList.length);
+        localEntityPosts.add(localEntityPost);
+      }
+
+      emit(
+        state.copyWith(
+            statusPage: StatusPage.loaded,
+            postList: localEntityPosts,
+            userModel: userModel,
+            newImage: ''),
+      );
     } catch (e) {
       emit(state.copyWith(statusPage: StatusPage.failure, error: e));
+    }
+  }
+
+  Future<void> _likeOrRemove(AddOrRemoveLikeInProfile event, emit) async {
+    try {
+      await _abstractPostRepository.addOrRemoveLikeOnPost(
+          postModel: event.localEntityPost.postModel,
+          currentUserId: event.currentUserId);
+
+      final isLiked = await _abstractPostRepository.isLiked(
+          postModel: event.localEntityPost.postModel,
+          currentUserId: event.currentUserId);
+      LocalEntityPost localEntityPost =
+          event.localEntityPost.copyWith(isLiked: isLiked);
+      List<LocalEntityPost> updatedPostList = List.from(state.postList);
+      if (isLiked) {
+        updatedPostList[event.index] = localEntityPost.copyWith(
+            likeCounter: localEntityPost.likeCounter + 1);
+      } else {
+        updatedPostList[event.index] = localEntityPost.copyWith(
+            likeCounter: localEntityPost.likeCounter - 1);
+      }
+
+      emit(state.copyWith(postList: updatedPostList));
+    } catch (e) {
+      emit(state.copyWith(
+        error: e,
+      ));
     }
   }
 }

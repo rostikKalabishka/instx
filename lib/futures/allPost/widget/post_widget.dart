@@ -1,21 +1,16 @@
 import 'package:auto_route/auto_route.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
-import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 import 'package:instx/futures/allPost/local_entity/local_entity_post.dart';
-import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/router/router.dart';
 import 'package:instx/ui/theme/const.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget(
-      {super.key, required this.localEntityPost, required this.index});
+      {super.key, required this.localEntityPost, required this.onPressed});
   final LocalEntityPost localEntityPost;
-  final int index;
+
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +80,6 @@ class PostWidget extends StatelessWidget {
                                   : 2,
                               mainAxisSpacing: 15,
                               crossAxisSpacing: 15,
-                              // childAspectRatio: 2.0,
                             ),
                             itemCount:
                                 localEntityPost.postModel.imageUrlList.length,
@@ -105,13 +99,7 @@ class PostWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          onPressed: () {
-                            context.read<AllPostBloc>().add(AddOrRemoveLike(
-                                localEntityPost: localEntityPost,
-                                currentUserId:
-                                    context.read<AuthBloc>().state.userId,
-                                index: index));
-                          },
+                          onPressed: onPressed,
                           child: Row(
                             children: [
                               localEntityPost.isLiked

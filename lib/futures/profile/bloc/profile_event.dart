@@ -16,6 +16,19 @@ class LoadedInfo extends ProfileEvent {
   List<Object> get props => super.props..add(userId);
 }
 
+class AddOrRemoveLikeInProfile extends ProfileEvent {
+  final LocalEntityPost localEntityPost;
+  final String currentUserId;
+  final int index;
+
+  const AddOrRemoveLikeInProfile(
+      {required this.localEntityPost,
+      required this.currentUserId,
+      required this.index});
+  @override
+  List<Object> get props => [localEntityPost, currentUserId, index];
+}
+
 class UpdateUserInfoEvent extends ProfileEvent {
   final BuildContext context;
   final String updateUserName;

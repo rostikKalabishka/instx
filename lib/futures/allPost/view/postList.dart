@@ -56,7 +56,13 @@ class _PostListPageState extends State<PostListPage> {
                       final post = state.postList[index];
                       return PostWidget(
                         localEntityPost: post,
-                        index: index,
+                        onPressed: () {
+                          context.read<AllPostBloc>().add(AddOrRemoveLike(
+                              localEntityPost: state.postList[index],
+                              currentUserId:
+                                  context.read<AuthBloc>().state.userId,
+                              index: index));
+                        },
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {

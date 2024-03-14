@@ -156,7 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           final post = state.postList[index];
                           return PostWidget(
                             localEntityPost: post,
-                            index: index,
+                            onPressed: () {
+                              context.read<ProfileBloc>().add(
+                                  AddOrRemoveLikeInProfile(
+                                      localEntityPost: post,
+                                      currentUserId:
+                                          context.read<AuthBloc>().state.userId,
+                                      index: index));
+                            },
                           );
                         }),
                         separatorBuilder: (BuildContext context, int index) {
