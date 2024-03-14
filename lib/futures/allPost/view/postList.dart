@@ -15,12 +15,19 @@ class PostListPage extends StatefulWidget {
 }
 
 class _PostListPageState extends State<PostListPage> {
+  // @override
+  // void initState() {
+  //   context
+  //       .read<AllPostBloc>()
+  //       .add(AllPostLoaded(userId: context.read<AuthBloc>().state.userId));
+  //   super.initState();
+  // }
   @override
-  void initState() {
+  void didChangeDependencies() {
     context
         .read<AllPostBloc>()
         .add(AllPostLoaded(userId: context.read<AuthBloc>().state.userId));
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override

@@ -142,11 +142,9 @@ class UserRepository implements AbstractAuthRepository {
   @override
   Future<String> uploadPicture(String file, String userId) async {
     try {
-      DateTime time = DateTime.now();
       File imageFile = File(file);
-      Reference referenceStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('$userId//PP/${userId}_${time}_load');
+      Reference referenceStorageRef =
+          FirebaseStorage.instance.ref().child('$userId//PP/${userId}_load');
 
       await referenceStorageRef.putFile(imageFile);
       String url = await referenceStorageRef.getDownloadURL();

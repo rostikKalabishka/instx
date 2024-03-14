@@ -21,10 +21,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // @override
+  // void initState() {
+  //   context.read<ProfileBloc>().add(LoadedInfo(userId: widget.userId));
+  //   super.initState();
+  //}
   @override
-  void initState() {
+  void didChangeDependencies() {
     context.read<ProfileBloc>().add(LoadedInfo(userId: widget.userId));
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
@@ -158,11 +163,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             localEntityPost: post,
                             onPressed: () {
                               context.read<ProfileBloc>().add(
-                                  AddOrRemoveLikeInProfile(
-                                      localEntityPost: post,
-                                      currentUserId:
-                                          context.read<AuthBloc>().state.userId,
-                                      index: index));
+                                    AddOrRemoveLikeInProfile(
+                                        localEntityPost: post,
+                                        currentUserId: context
+                                            .read<AuthBloc>()
+                                            .state
+                                            .userId,
+                                        index: index),
+                                  );
+                              //zalupa
+
+                              context.read<AllPostBloc>().add(AddOrRemoveLike(
+                                  localEntityPost: state.postList[index],
+                                  currentUserId:
+                                      context.read<AuthBloc>().state.userId,
+                                  index: index));
                             },
                           );
                         }),
