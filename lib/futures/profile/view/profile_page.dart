@@ -21,11 +21,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // @override
-  // void initState() {
-  //   context.read<ProfileBloc>().add(LoadedInfo(userId: widget.userId));
-  //   super.initState();
-  //}
   @override
   void didChangeDependencies() {
     context.read<ProfileBloc>().add(LoadedInfo(userId: widget.userId));
@@ -74,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ));
                                     },
                                     child: Text(
-                                      'Redact Profile',
+                                      'Edit',
                                       style: theme.textTheme.labelLarge,
                                     ))
                                 : const SizedBox.shrink()
@@ -249,6 +244,9 @@ class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
     final state = widget.state;
     final theme = Theme.of(context);
     return BlocListener<ProfileBloc, ProfileState>(
+      listenWhen: (previous, current) => previous.newImage != current.newImage
+          ? isVisibleButton = true
+          : isVisibleButton = false,
       listener: (context, state) {
         setState(() {
           newImage = state.newImage;

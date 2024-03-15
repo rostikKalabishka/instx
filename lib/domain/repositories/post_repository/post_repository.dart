@@ -9,7 +9,7 @@ import 'package:uuid/uuid.dart';
 
 class PostRepository implements AbstractPostRepository {
   final postCollection = FirebaseFirestore.instance.collection('posts');
-  @override
+
   @override
   Future<PostModel> createPost(PostModel postModel) async {
     try {

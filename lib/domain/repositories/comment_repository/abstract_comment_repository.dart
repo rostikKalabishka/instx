@@ -3,8 +3,6 @@ import 'models/comment_model.dart';
 
 abstract interface class AbstractCommentRepository {
   Future<CommentModel> createComment(
-      {required PostModel post,
-      required String userId,
-      required String comment});
+      {required String userId, required CommentModel comment});
   Future<List<CommentModel>> getCommentForPost({required PostModel post});
 }
