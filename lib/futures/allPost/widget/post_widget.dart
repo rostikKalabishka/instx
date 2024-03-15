@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instx/futures/allPost/local_entity/local_entity_post.dart';
+import 'package:instx/futures/allPost/widget/comment_list.dart';
 import 'package:instx/router/router.dart';
+import 'package:instx/ui/components/show_modal_menu_bottom_sheet.dart';
 import 'package:instx/ui/theme/const.dart';
 
 class PostWidget extends StatelessWidget {
@@ -140,7 +142,13 @@ class PostWidget extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            showModalMenuBottomSheet(
+                                context: context,
+                                modalHeight:
+                                    MediaQuery.of(context).size.height * 0.9,
+                                child: const CommentListWidget());
+                          },
                           child: Row(
                             children: [
                               Icon(
