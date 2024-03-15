@@ -7,14 +7,14 @@ part 'comment_model.g.dart';
 class CommentModel extends Equatable {
   final String commentId;
   final String comment;
-  final DateTime? createAt;
+  final DateTime createAt;
   final String userId;
   final PostModel postModel;
 
   const CommentModel({
     required this.commentId,
     required this.comment,
-    this.createAt,
+    required this.createAt,
     required this.userId,
     required this.postModel,
   });
@@ -23,7 +23,8 @@ class CommentModel extends Equatable {
       commentId: '',
       comment: '',
       userId: 'userId',
-      postModel: PostModel.emptyPost);
+      postModel: PostModel.emptyPost,
+      createAt: DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -53,5 +54,13 @@ class CommentModel extends Equatable {
   factory CommentModel.fromJson(Map<String, dynamic> json) =>
       _$CommentModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CommentModelToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      "commentId": commentId,
+      "createAt": createAt.toIso8601String(),
+      "comment": comment,
+      "userId": userId,
+      "postModel": postModel.toJson()
+    };
+  }
 }

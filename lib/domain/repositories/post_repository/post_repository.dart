@@ -118,4 +118,15 @@ class PostRepository implements AbstractPostRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<void> updatePost({required PostModel postModel}) async {
+    try {
+      await postCollection.doc(postModel.postId).update(postModel.toJson());
+    } catch (e) {
+      log(e.toString());
+
+      rethrow;
+    }
+  }
 }

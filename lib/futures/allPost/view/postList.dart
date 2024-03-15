@@ -63,12 +63,16 @@ class _PostListPageState extends State<PostListPage> {
                       final post = state.postList[index];
                       return PostWidget(
                         localEntityPost: post,
-                        onPressed: () {
+                        onPressedLike: () {
                           context.read<AllPostBloc>().add(AddOrRemoveLike(
                               localEntityPost: state.postList[index],
                               currentUserId:
                                   context.read<AuthBloc>().state.userId,
                               index: index));
+                        },
+                        onPressedComment: () {
+                          context.read<AllPostBloc>().add(LoadComment(
+                              context: context, postModel: post.postModel));
                         },
                       );
                     },

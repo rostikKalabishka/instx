@@ -156,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           final post = state.postList[index];
                           return PostWidget(
                             localEntityPost: post,
-                            onPressed: () {
+                            onPressedLike: () {
                               context.read<ProfileBloc>().add(
                                     AddOrRemoveLikeInProfile(
                                         localEntityPost: post,
@@ -174,6 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context.read<AuthBloc>().state.userId,
                                   index: index));
                             },
+                            onPressedComment: () {},
                           );
                         }),
                         separatorBuilder: (BuildContext context, int index) {

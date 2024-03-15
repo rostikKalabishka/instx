@@ -1,21 +1,32 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instx/domain/repositories/comment_repository/models/comment_model.dart';
+import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
+import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
+import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/ui/theme/const.dart';
+import 'package:intl/intl.dart';
 
 class CommentListWidget extends StatefulWidget {
-  const CommentListWidget({super.key});
+  const CommentListWidget(
+      {super.key, required this.commentList, required this.postModel});
+  final List<CommentModel> commentList;
+  final PostModel postModel;
 
   @override
   State<CommentListWidget> createState() => _CommentListWidgetState();
 }
 
 class _CommentListWidgetState extends State<CommentListWidget> {
+  final TextEditingController commentController = TextEditingController();
+  late List<CommentModel> commentList;
   @override
   void initState() {
+    commentList = widget.commentList;
     super.initState();
   }
 
@@ -33,14 +44,15 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                   onPressed: () {
                     AutoRouter.of(context).pop();
                   },
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                 ),
               ],
             ),
           ),
           SliverList.separated(
-            itemCount: 10,
+            itemCount: commentList.length,
             itemBuilder: (context, index) {
+              final comment = commentList[index];
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,16 +86,18 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Vvvvvv dssfddfs',
+                                comment.postModel.userModel.username,
                                 style: theme.textTheme.subtitle1,
                               ),
                               Text(
-                                '14 aug 2002 15:30',
+                                DateFormat.yMd()
+                                    .add_jm()
+                                    .format(comment.createAt),
                                 style: theme.textTheme.bodySmall,
                               ),
                             ]),
                         Text(
-                          'Vvvvvv dssfddfs ddddddddddd dddddd ddddd',
+                          comment.comment,
                           style: theme.textTheme.bodyText1,
                         )
                       ],
@@ -93,7 +107,7 @@ class _CommentListWidgetState extends State<CommentListWidget> {
               );
             },
             separatorBuilder: (BuildContext context, int index) {
-              return Divider();
+              return const Divider();
             },
           ),
           SliverToBoxAdapter(
@@ -106,6 +120,7 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                     children: [
                       Expanded(
                           child: TextFormField(
+                        controller: commentController,
                         decoration: InputDecoration(
                           hintText: 'Add comment',
                           focusedBorder: OutlineInputBorder(
@@ -119,7 +134,16 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                         ),
                       )),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.read<AllPostBloc>().add(
+                                  AddComment(
+                                      comment: commentController.text,
+                                      userId:
+                                          context.read<AuthBloc>().state.userId,
+                                      postModel: widget.postModel),
+                                );
+                            setState(() {});
+                          },
                           icon: const Icon(FontAwesomeIcons.arrowRight))
                     ],
                   ),

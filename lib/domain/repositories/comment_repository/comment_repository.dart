@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instx/domain/repositories/comment_repository/abstract_comment_repository.dart';
 import 'package:instx/domain/repositories/comment_repository/models/comment_model.dart';
 import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
-import 'package:uuid/uuid.dart';
 
 class CommentRepository implements AbstractCommentRepository {
   final commentCollection = FirebaseFirestore.instance.collection('comments');
@@ -13,12 +12,8 @@ class CommentRepository implements AbstractCommentRepository {
   Future<CommentModel> createComment(
       {required String userId, required CommentModel comment}) async {
     try {
-      final newComment = comment.copyWith(
-          commentId: const Uuid().v1(), createAt: DateTime.now());
-      await commentCollection
-          .doc(newComment.commentId)
-          .set(newComment.toJson());
-      return newComment;
+      await commentCollection.doc(comment.commentId).set(comment.toJson());
+      return comment;
     } catch (e) {
       log(e.toString());
       rethrow;

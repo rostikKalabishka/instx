@@ -49,7 +49,10 @@ class _ProvideBlocState extends State<ProvideBloc> {
           create: (_) => ForgetPasswordBloc(userRepository),
           child: const ForgetPasswordPage()),
       BlocProvider(create: (_) => PostBloc(postRepository, userRepository)),
-      BlocProvider(create: (_) => AllPostBloc(postRepository)),
+      BlocProvider(
+          create: (_) => AllPostBloc(
+              abstractPostRepository: postRepository,
+              abstractCommentRepository: commentRepository)),
       BlocProvider(
           create: (_) => ProfileBloc(
               abstractAuthRepository: userRepository,

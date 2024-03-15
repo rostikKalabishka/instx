@@ -12,4 +12,8 @@ abstract interface class AbstractPostRepository {
 
   Future<bool> isLiked(
       {required PostModel postModel, required String currentUserId});
+
+  Future<void> updatePost({
+    required PostModel postModel,
+  });
 }

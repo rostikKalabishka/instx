@@ -16,6 +16,28 @@ class AllPostLoaded extends AllPostEvent {
   List<Object> get props => super.props..add(userId);
 }
 
+class LoadComment extends AllPostEvent {
+  final PostModel postModel;
+  final BuildContext context;
+
+  const LoadComment({required this.postModel, required this.context});
+
+  @override
+  List<Object> get props => super.props..addAll([postModel, context]);
+}
+
+class AddComment extends AllPostEvent {
+  final String comment;
+  final String userId;
+  final PostModel postModel;
+
+  const AddComment(
+      {required this.comment, required this.userId, required this.postModel});
+
+  @override
+  List<Object> get props => super.props..addAll([comment, userId, postModel]);
+}
+
 class AddOrRemoveLike extends AllPostEvent {
   final LocalEntityPost localEntityPost;
   final String currentUserId;
