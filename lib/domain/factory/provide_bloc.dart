@@ -56,7 +56,8 @@ class _ProvideBlocState extends State<ProvideBloc> {
       BlocProvider(
           create: (_) => ProfileBloc(
               abstractAuthRepository: userRepository,
-              abstractPostRepository: postRepository))
+              abstractPostRepository: postRepository,
+              abstractCommentRepository: commentRepository))
     ], child: widget.child);
   }
 }

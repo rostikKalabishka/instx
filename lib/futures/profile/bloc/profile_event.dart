@@ -16,6 +16,28 @@ class LoadedInfo extends ProfileEvent {
   List<Object> get props => super.props..add(userId);
 }
 
+class LoadCommentProfile extends ProfileEvent {
+  final PostModel postModel;
+  final BuildContext context;
+
+  const LoadCommentProfile({required this.postModel, required this.context});
+
+  @override
+  List<Object> get props => super.props..addAll([postModel, context]);
+}
+
+class AddCommentProfile extends ProfileEvent {
+  final String comment;
+  final String userId;
+  final PostModel postModel;
+
+  const AddCommentProfile(
+      {required this.comment, required this.userId, required this.postModel});
+
+  @override
+  List<Object> get props => super.props..addAll([comment, userId, postModel]);
+}
+
 class AddOrRemoveLikeInProfile extends ProfileEvent {
   final LocalEntityPost localEntityPost;
   final String currentUserId;

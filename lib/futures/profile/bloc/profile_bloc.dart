@@ -5,12 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instx/domain/repositories/comment_repository/abstract_comment_repository.dart';
+import 'package:instx/domain/repositories/comment_repository/models/comment_model.dart';
 import 'package:instx/domain/repositories/post_repository/abstract_post_repository.dart';
+import 'package:instx/domain/repositories/post_repository/models/post_model.dart';
 
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 import 'package:instx/futures/allPost/local_entity/local_entity_post.dart';
+import 'package:instx/futures/allPost/widget/comment_list.dart';
+import 'package:instx/ui/components/show_modal_menu_bottom_sheet.dart';
+import 'package:uuid/uuid.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -18,11 +24,14 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final AbstractAuthRepository _abstractAuthRepository;
   final AbstractPostRepository _abstractPostRepository;
+  final AbstractCommentRepository _abstractCommentRepository;
   ProfileBloc(
       {required AbstractAuthRepository abstractAuthRepository,
-      required AbstractPostRepository abstractPostRepository})
+      required AbstractPostRepository abstractPostRepository,
+      required AbstractCommentRepository abstractCommentRepository})
       : _abstractAuthRepository = abstractAuthRepository,
         _abstractPostRepository = abstractPostRepository,
+        _abstractCommentRepository = abstractCommentRepository,
         super(const ProfileState()) {
     on<ProfileEvent>((event, emit) async {
       if (event is LoadedInfo) {
@@ -33,6 +42,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         await _updateUserInfo(event, emit);
       } else if (event is AddOrRemoveLikeInProfile) {
         await _likeOrRemove(event, emit);
+      } else if (event is AddCommentProfile) {
+        await _createComment(event, emit);
+      } else if (event is LoadCommentProfile) {
+        await _loadComment(event, emit);
       }
     });
   }
@@ -91,6 +104,48 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       autoRouter.pop();
     } catch (e) {
       emit(state.copyWith(statusPage: StatusPage.failure, error: e));
+    }
+  }
+
+  Future<void> _createComment(AddCommentProfile event, emit) async {
+    try {
+      List<CommentModel> oldArrComment = state.commentList;
+      CommentModel commentModel = CommentModel(
+          commentId: const Uuid().v1(),
+          comment: event.comment,
+          userId: event.userId,
+          postModel: event.postModel,
+          createAt: DateTime.now());
+      List<CommentModel> newArrComment = List.from(oldArrComment)
+        ..add(commentModel);
+
+      emit(state.copyWith(commentList: newArrComment));
+      await _abstractCommentRepository.createComment(
+          userId: event.userId, comment: commentModel);
+      await _abstractPostRepository.updatePost(
+          postModel: event.postModel.copyWith(
+              commentList: newArrComment.map((e) => e.commentId).toList()));
+    } catch (e) {
+      emit(state.copyWith(error: e));
+    }
+  }
+
+  Future<void> _loadComment(LoadCommentProfile event, emit) async {
+    try {
+      List<CommentModel> allCommentsForPost = await _abstractCommentRepository
+          .getCommentForPost(post: event.postModel);
+
+      emit(state.copyWith(commentList: allCommentsForPost));
+
+      showModalMenuBottomSheet(
+          context: event.context,
+          modalHeight: MediaQuery.of(event.context).size.height * 0.9,
+          child: CommentListWidget(
+            commentList: allCommentsForPost,
+            postModel: event.postModel,
+          ));
+    } catch (e) {
+      emit(state.copyWith(error: e));
     }
   }
 

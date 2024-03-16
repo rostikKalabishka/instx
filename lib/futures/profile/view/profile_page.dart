@@ -155,6 +155,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         itemBuilder: ((context, index) {
                           final post = state.postList[index];
                           return PostWidget(
+                            onPressedComment: () {
+                              context.read<ProfileBloc>().add(
+                                  LoadCommentProfile(
+                                      postModel: post.postModel,
+                                      context: context));
+                            },
                             localEntityPost: post,
                             onPressedLike: () {
                               context.read<ProfileBloc>().add(
@@ -174,7 +180,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context.read<AuthBloc>().state.userId,
                                   index: index));
                             },
-                            onPressedComment: () {},
                           );
                         }),
                         separatorBuilder: (BuildContext context, int index) {
@@ -278,7 +283,7 @@ class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.5,
-                    child: Text('Redact Profile',
+                    child: Text('Edit Profile',
                         style: theme.textTheme.headlineSmall),
                   ),
                   isVisibleButton
