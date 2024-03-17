@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import 'package:instx/futures/auth/signin/forget_password/view/forget_password.dart';
+import 'package:instx/futures/followers_page/view/followers_page.dart';
 import 'package:instx/futures/loader/view/loader.dart';
 import 'package:instx/futures/post/view/post_page.dart';
 import 'package:instx/futures/profile/view/profile_page.dart';
@@ -19,6 +20,7 @@ class AppRouterPath {
   static const authRoutePath = '/auth';
   static const postRoutePath = '/home/post';
   static const profileRoutePath = '/home/profile';
+  static const followersRoutePath = '/home/profile/followers';
 }
 
 @AutoRouterConfig()
@@ -44,5 +46,7 @@ class AppRouter extends _$AppRouter {
         AutoRoute(page: PostRoute.page, path: AppRouterPath.postRoutePath),
         AutoRoute(
             page: ProfileRoute.page, path: AppRouterPath.profileRoutePath),
+        AutoRoute(
+            page: FollowersRoute.page, path: AppRouterPath.followersRoutePath),
       ];
 }

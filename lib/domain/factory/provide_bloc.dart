@@ -10,6 +10,7 @@ import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/futures/auth/registration/bloc/registration_bloc.dart';
 import 'package:instx/futures/auth/signin/bloc/sign_in_bloc.dart';
 import 'package:instx/futures/auth/signin/forget_password/bloc/forget_password_bloc.dart';
+import 'package:instx/futures/followers_page/bloc/followers_page_bloc.dart';
 import 'package:instx/futures/post/bloc/post_bloc.dart';
 
 import '../../futures/auth/auth_page.dart';
@@ -48,16 +49,24 @@ class _ProvideBlocState extends State<ProvideBloc> {
       BlocProvider(
           create: (_) => ForgetPasswordBloc(userRepository),
           child: const ForgetPasswordPage()),
-      BlocProvider(create: (_) => PostBloc(postRepository, userRepository)),
       BlocProvider(
-          create: (_) => AllPostBloc(
-              abstractPostRepository: postRepository,
-              abstractCommentRepository: commentRepository)),
+        create: (_) => PostBloc(postRepository, userRepository),
+      ),
       BlocProvider(
-          create: (_) => ProfileBloc(
-              abstractAuthRepository: userRepository,
-              abstractPostRepository: postRepository,
-              abstractCommentRepository: commentRepository))
+        create: (_) => AllPostBloc(
+            abstractPostRepository: postRepository,
+            abstractCommentRepository: commentRepository),
+      ),
+      BlocProvider(
+        create: (_) =>
+            FollowersPageBloc(abstractAuthRepository: userRepository),
+      ),
+      BlocProvider(
+        create: (_) => ProfileBloc(
+            abstractAuthRepository: userRepository,
+            abstractPostRepository: postRepository,
+            abstractCommentRepository: commentRepository),
+      )
     ], child: widget.child);
   }
 }

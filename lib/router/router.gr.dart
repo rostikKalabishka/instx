@@ -21,6 +21,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const AuthPage(),
       );
     },
+    FollowersRoute.name: (routeData) {
+      final args = routeData.argsAs<FollowersRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: FollowersPage(
+          key: args.key,
+          userId: args.userId,
+        ),
+      );
+    },
     ForgetPasswordRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -86,6 +96,44 @@ class AuthRoute extends PageRouteInfo<void> {
   static const String name = 'AuthRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [FollowersPage]
+class FollowersRoute extends PageRouteInfo<FollowersRouteArgs> {
+  FollowersRoute({
+    Key? key,
+    required String userId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          FollowersRoute.name,
+          args: FollowersRouteArgs(
+            key: key,
+            userId: userId,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'FollowersRoute';
+
+  static const PageInfo<FollowersRouteArgs> page =
+      PageInfo<FollowersRouteArgs>(name);
+}
+
+class FollowersRouteArgs {
+  const FollowersRouteArgs({
+    this.key,
+    required this.userId,
+  });
+
+  final Key? key;
+
+  final String userId;
+
+  @override
+  String toString() {
+    return 'FollowersRouteArgs{key: $key, userId: $userId}';
+  }
 }
 
 /// generated route for

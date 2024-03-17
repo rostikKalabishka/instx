@@ -26,6 +26,15 @@ class LoadCommentProfile extends ProfileEvent {
   List<Object> get props => super.props..addAll([postModel, context]);
 }
 
+class FollowingEvent extends ProfileEvent {
+  final String currentAuthUserId;
+
+  const FollowingEvent({required this.currentAuthUserId});
+
+  @override
+  List<Object> get props => super.props..addAll([currentAuthUserId]);
+}
+
 class AddCommentProfile extends ProfileEvent {
   final String comment;
   final String userId;

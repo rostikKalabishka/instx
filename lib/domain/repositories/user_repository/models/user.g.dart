@@ -13,8 +13,9 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       imageUrl: json['imageUrl'] as String,
       createAt: json['createAt'] as String,
       status: json['status'] as String,
-      followers:
-          (json['followers'] as List<dynamic>).map((e) => e as String).toList(),
+      followers: (json['followers'] as List<dynamic>)
+          .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{

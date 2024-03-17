@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 import 'package:instx/futures/allPost/widget/post_widget.dart';
 import 'package:instx/futures/auth/bloc/auth_bloc.dart';
 import 'package:instx/futures/profile/bloc/profile_bloc.dart';
+import 'package:instx/router/router.dart';
 import 'package:instx/ui/components/show_modal_menu_bottom_sheet.dart';
 import 'package:instx/ui/theme/const.dart';
 
@@ -126,9 +128,36 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          'Followers: ${state.userModel.followers.length}',
-                          style: theme.textTheme.labelLarge,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                AutoRouter.of(context).push(FollowersRoute(
+                                    userId: state.userModel.uid));
+                              },
+                              child: Text(
+                                'Followers: ${state.userModel.followers.length}',
+                                style: theme.textTheme.labelLarge,
+                              ),
+                            ),
+                            context.read<AuthBloc>().state.userId ==
+                                    widget.userId
+                                ? const SizedBox.shrink()
+                                : OutlinedButton(
+                                    onPressed: () {
+                                      context.read<ProfileBloc>().add(
+                                          FollowingEvent(
+                                              currentAuthUserId: context
+                                                  .read<AuthBloc>()
+                                                  .state
+                                                  .userId));
+                                    },
+                                    child: Text(
+                                      'Follow',
+                                      style: theme.textTheme.labelLarge,
+                                    ))
+                          ],
                         ),
                         const SizedBox(
                           height: 10,

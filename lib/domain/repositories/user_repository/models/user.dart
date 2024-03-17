@@ -11,7 +11,7 @@ class UserModel extends Equatable {
   final String imageUrl;
   final String createAt;
   final String status;
-  final List<String> followers;
+  final List<UserModel> followers;
 
   const UserModel({
     required this.uid,
@@ -40,7 +40,7 @@ class UserModel extends Equatable {
       String? username,
       String? imageUrl,
       String? status,
-      List<String>? followers,
+      List<UserModel>? followers,
       String? createAt}) {
     return UserModel(
         uid: uid ?? this.uid,

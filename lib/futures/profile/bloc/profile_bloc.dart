@@ -149,6 +149,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
+  Future<void> _follow(event, emit) async {
+    try {} catch (e) {
+      emit(state.copyWith(error: e));
+    }
+  }
+
   Future<void> _loadedInfo(LoadedInfo event, emit) async {
     if (state.statusPage != StatusPage.loaded) {
       emit(state.copyWith(statusPage: StatusPage.loading));
