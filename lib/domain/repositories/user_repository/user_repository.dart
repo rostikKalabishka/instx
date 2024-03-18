@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:instx/domain/repositories/user_repository/abstract_user_repository.dart';
+import 'package:instx/domain/repositories/user_repository/models/models.dart';
 import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:intl/intl.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -205,6 +206,47 @@ class UserRepository implements AbstractAuthRepository {
           .doc(userId)
           .get()
           .then((value) => UserModel.fromJson(value.data()!));
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> following(
+      {required UserModel userModel, required UserModel currentUser}) async {
+    try {
+      final userDoc = usersCollection.doc(userModel.uid);
+      final userData = await userDoc.get();
+
+      final List<UserModel> followers =
+          List<UserModel>.from(userData.data()?['followers'] ?? []);
+
+      if (!followers.contains(currentUser)) {
+        followers.add(currentUser);
+      } else {
+        followers.remove(currentUser);
+      }
+      userModel = userModel.copyWith(followers: followers);
+
+      final followersJson = followers.map((e) => e.toJson()).toList();
+
+      await userDoc.update({'followers': followersJson});
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<UserModel>> getFollowersCurrentUser(
+      {required UserModel userModel}) async {
+    try {
+      final userDoc = usersCollection.doc(userModel.uid);
+      final userData = await userDoc.get();
+      final List<UserModel> followers =
+          List<UserModel>.from(userData.data()?['followers'] ?? []);
+      return followers;
     } catch (e) {
       log(e.toString());
       rethrow;

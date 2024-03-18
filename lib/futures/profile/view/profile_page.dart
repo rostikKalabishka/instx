@@ -49,9 +49,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CircleAvatar(
-                              backgroundImage: state
-                                      .userModel.imageUrl.isNotEmpty
-                                  ? NetworkImage(state.userModel.imageUrl)
+                              backgroundImage: state.userLocalEntity.userModel
+                                      .imageUrl.isNotEmpty
+                                  ? NetworkImage(
+                                      state.userLocalEntity.userModel.imageUrl)
                                   : const AssetImage(AppConst.userPlaceholder)
                                       as ImageProvider<Object>,
                               radius: 30,
@@ -81,22 +82,22 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 10,
                         ),
                         Text(
-                          state.userModel.username,
+                          state.userLocalEntity.userModel.username,
                           style: theme.textTheme.displaySmall,
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         Text(
-                          state.userModel.email,
+                          state.userLocalEntity.userModel.email,
                           style: theme.textTheme.labelLarge,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
                         Text(
-                          state.userModel.status.isNotEmpty
-                              ? state.userModel.status
+                          state.userLocalEntity.userModel.status.isNotEmpty
+                              ? state.userLocalEntity.userModel.status
                               : 'No have status',
                           style: theme.textTheme.labelLarge,
                         ),
@@ -120,7 +121,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               width: 5,
                             ),
                             Text(
-                              state.userModel.createAt.toString(),
+                              state.userLocalEntity.userModel.createAt
+                                  .toString(),
                               style: theme.textTheme.labelLarge,
                             )
                           ],
@@ -134,10 +136,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             GestureDetector(
                               onTap: () {
                                 AutoRouter.of(context).push(FollowersRoute(
-                                    userId: state.userModel.uid));
+                                    userId:
+                                        state.userLocalEntity.userModel.uid));
                               },
                               child: Text(
-                                'Followers: ${state.userModel.followers.length}',
+                                'Followers: ${state.userLocalEntity.followerCounter}',
                                 style: theme.textTheme.labelLarge,
                               ),
                             ),
@@ -153,10 +156,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   .state
                                                   .userId));
                                     },
-                                    child: Text(
-                                      'Follow',
-                                      style: theme.textTheme.labelLarge,
-                                    ))
+                                    child: state.userLocalEntity.isFollowing ==
+                                            false
+                                        ? Text(
+                                            'Follow',
+                                            style: theme.textTheme.labelLarge,
+                                          )
+                                        : Text(
+                                            'Un follow',
+                                            style: theme.textTheme.labelLarge,
+                                          ))
                           ],
                         ),
                         const SizedBox(
@@ -266,10 +275,10 @@ class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
 
   @override
   void initState() {
-    userNameController =
-        TextEditingController(text: widget.state.userModel.username);
-    statusController =
-        TextEditingController(text: widget.state.userModel.status);
+    userNameController = TextEditingController(
+        text: widget.state.userLocalEntity.userModel.username);
+    statusController = TextEditingController(
+        text: widget.state.userLocalEntity.userModel.status);
 
     super.initState();
   }
@@ -352,8 +361,9 @@ class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
                 },
                 child: CircleAvatar(
                   backgroundImage: newImage.isEmpty
-                      ? state.userModel.imageUrl.isNotEmpty
-                          ? NetworkImage(state.userModel.imageUrl)
+                      ? state.userLocalEntity.userModel.imageUrl.isNotEmpty
+                          ? NetworkImage(
+                              state.userLocalEntity.userModel.imageUrl)
                           : const AssetImage(AppConst.userPlaceholder)
                               as ImageProvider<Object>
                       : AssetImage(newImage),
@@ -376,7 +386,7 @@ class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
                   Expanded(
                     child: TextFormField(
                       onChanged: (value) {
-                        if (state.userModel.username != value) {
+                        if (state.userLocalEntity.userModel.username != value) {
                           setState(() {
                             isVisibleButton = true;
                           });
@@ -402,7 +412,7 @@ class _UpdateUserInfoWidgetState extends State<UpdateUserInfoWidget> {
                   Expanded(
                     child: TextFormField(
                       onChanged: (value) {
-                        if (state.userModel.status != value) {
+                        if (state.userLocalEntity.userModel.status != value) {
                           setState(() {
                             isVisibleButton = true;
                           });

@@ -56,6 +56,16 @@ class UserModel extends Equatable {
       _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  // Map<String, dynamic> toJson() => {
+  //   'uid': uid,
+  //   'email': email,
+  //   'username': username,
+  //   'imageUrl': imageUrl,
+  //   'createAt': createAt,
+  //   'status': status,
+  //   'followers': followers.t
+  // };
 }
 
 class UserModelField {

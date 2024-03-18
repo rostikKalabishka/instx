@@ -22,6 +22,12 @@ abstract interface class AbstractAuthRepository {
     UserModel userModel,
   );
 
+  Future<void> following(
+      {required UserModel userModel, required UserModel currentUser});
+
+  Future<List<UserModel>> getFollowersCurrentUser(
+      {required UserModel userModel});
+
   Future<UserModel> getUserById({required String userId});
 
   Future<String> uploadPicture(String file, String userId);

@@ -15,6 +15,7 @@ import 'package:instx/domain/repositories/user_repository/models/user.dart';
 import 'package:instx/futures/allPost/bloc/all_post_bloc.dart';
 import 'package:instx/futures/allPost/local_entity/local_entity_post.dart';
 import 'package:instx/futures/allPost/widget/comment_list.dart';
+import 'package:instx/futures/profile/local_entity/user_local_entity.dart';
 import 'package:instx/ui/components/show_modal_menu_bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
 
@@ -46,6 +47,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         await _createComment(event, emit);
       } else if (event is LoadCommentProfile) {
         await _loadComment(event, emit);
+      } else if (event is FollowingEvent) {
+        await _follow(event, emit);
       }
     });
   }
@@ -91,16 +94,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _updateUserInfo(UpdateUserInfoEvent event, emit) async {
     final autoRouter = AutoRouter.of(event.context);
     try {
-      UserModel userModel = state.userModel.copyWith(
+      UserLocalEntity userLocalEntity = state.userLocalEntity;
+      userLocalEntity.userModel.copyWith(
           status: event.updateStatus.trim(),
           username: event.updateUserName.trim());
       final newImage = await _abstractAuthRepository.uploadPicture(
-          state.newImage, state.userModel.uid);
+          state.newImage, state.userLocalEntity.userModel.uid);
       if (newImage.isNotEmpty) {
-        userModel = userModel.copyWith(imageUrl: newImage);
+        userLocalEntity.userModel.copyWith(imageUrl: newImage);
       }
-      await _abstractAuthRepository.updateUserInfo(userModel);
-      emit(state.copyWith(userModel: userModel, newImage: ''));
+      await _abstractAuthRepository.updateUserInfo(userLocalEntity.userModel);
+      emit(state.copyWith(userLocalEntity: userLocalEntity, newImage: ''));
       autoRouter.pop();
     } catch (e) {
       emit(state.copyWith(statusPage: StatusPage.failure, error: e));
@@ -149,8 +153,25 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  Future<void> _follow(event, emit) async {
-    try {} catch (e) {
+  Future<void> _follow(FollowingEvent event, emit) async {
+    // emit(state.copyWith(buttonFollowingState: ButtonFollowingState.inProcess));
+    try {
+      final currentUser = await _abstractAuthRepository.getUserById(
+          userId: event.currentAuthUserId);
+      await _abstractAuthRepository.following(
+          userModel: state.userLocalEntity.userModel, currentUser: currentUser);
+      if (state.userLocalEntity.isFollowing == false) {
+        emit(state.copyWith(
+            userLocalEntity: state.userLocalEntity.copyWith(
+                isFollowing: true,
+                followerCounter: state.userLocalEntity.followerCounter + 1)));
+      } else {
+        emit(state.copyWith(
+            userLocalEntity: state.userLocalEntity.copyWith(
+                isFollowing: false,
+                followerCounter: state.userLocalEntity.followerCounter - 1)));
+      }
+    } catch (e) {
       emit(state.copyWith(error: e));
     }
   }
@@ -161,8 +182,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     try {
-      final UserModel userModel =
-          await _abstractAuthRepository.getUserById(userId: event.userId);
+      final UserLocalEntity userLocalEntity = UserLocalEntity(
+          userModel:
+              await _abstractAuthRepository.getUserById(userId: event.userId));
+
       final allPost = await _abstractPostRepository.getAllPostCurrentUser(
           userId: event.userId);
 
@@ -185,7 +208,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         state.copyWith(
             statusPage: StatusPage.loaded,
             postList: localEntityPosts,
-            userModel: userModel,
+            userLocalEntity: userLocalEntity,
             newImage: ''),
       );
     } catch (e) {
