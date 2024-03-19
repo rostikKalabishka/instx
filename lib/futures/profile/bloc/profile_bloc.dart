@@ -182,9 +182,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     try {
+      final currentUser =
+          await _abstractAuthRepository.getUserById(userId: event.userId);
+
       final UserLocalEntity userLocalEntity = UserLocalEntity(
-          userModel:
-              await _abstractAuthRepository.getUserById(userId: event.userId));
+          followerCounter: currentUser.followers.length,
+          isFollowing: await _abstractAuthRepository.isFollowed(
+              userModel: currentUser, currentUserId: event.userId),
+          userModel: currentUser);
 
       final allPost = await _abstractPostRepository.getAllPostCurrentUser(
           userId: event.userId);

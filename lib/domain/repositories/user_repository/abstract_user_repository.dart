@@ -28,9 +28,15 @@ abstract interface class AbstractAuthRepository {
   Future<List<UserModel>> getFollowersCurrentUser(
       {required UserModel userModel});
 
+  Future<List<UserModel>> searchUser(
+      {required String text, required UserModel userModel});
+
   Future<UserModel> getUserById({required String userId});
 
   Future<String> uploadPicture(String file, String userId);
+
+  Future<bool> isFollowed(
+      {required UserModel userModel, required String currentUserId});
 
   Future<void> signInWithApple();
 }

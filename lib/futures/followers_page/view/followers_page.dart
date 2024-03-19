@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instx/futures/followers_page/bloc/followers_page_bloc.dart';
+import 'package:instx/router/router.dart';
 import 'package:instx/ui/theme/const.dart';
 
 @RoutePage()
@@ -62,7 +63,7 @@ class _FollowersPageState extends State<FollowersPage> {
                         style: theme.textTheme.bodySmall,
                         decoration: InputDecoration(
                             hintText: 'Search for a coin...',
-                            hintStyle: TextStyle(color: theme.hintColor),
+                            hintStyle: TextStyle(color: Colors.black),
                             border: const OutlineInputBorder(
                                 borderSide: BorderSide.none),
                             enabledBorder: const OutlineInputBorder(
@@ -76,7 +77,11 @@ class _FollowersPageState extends State<FollowersPage> {
                     itemBuilder: (context, index) {
                       final user = state.userModelList[index];
                       return ListTile(
-                          title: Text(user.imageUrl),
+                          onTap: () {
+                            AutoRouter.of(context)
+                                .push(ProfileRoute(userId: user.uid));
+                          },
+                          title: Text(user.username),
                           subtitle: Text(user.status),
                           leading: CircleAvatar(
                             backgroundImage: user.imageUrl.isNotEmpty

@@ -213,14 +213,18 @@ class UserRepository implements AbstractAuthRepository {
   }
 
   @override
-  Future<void> following(
-      {required UserModel userModel, required UserModel currentUser}) async {
+  Future<void> following({
+    required UserModel userModel,
+    required UserModel currentUser,
+  }) async {
     try {
       final userDoc = usersCollection.doc(userModel.uid);
       final userData = await userDoc.get();
 
-      final List<UserModel> followers =
-          List<UserModel>.from(userData.data()?['followers'] ?? []);
+      final List<dynamic> followersData = userData.data()?['followers'] ?? [];
+      final List<UserModel> followers = followersData
+          .map((followerData) => UserModel.fromJson(followerData))
+          .toList();
 
       if (!followers.contains(currentUser)) {
         followers.add(currentUser);
@@ -229,11 +233,44 @@ class UserRepository implements AbstractAuthRepository {
       }
       userModel = userModel.copyWith(followers: followers);
 
-      final followersJson = followers.map((e) => e.toJson()).toList();
+      final followersJson =
+          followers.map((follower) => follower.toJson()).toList();
 
       await userDoc.update({'followers': followersJson});
     } catch (e) {
       log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> isFollowed(
+      {required UserModel userModel, required String currentUserId}) async {
+    try {
+      final userDoc = usersCollection.doc(userModel.uid);
+      bool isLiked = false;
+      final userData = await userDoc.get();
+
+      final List<dynamic> followersData = userData.data()?['followers'] ?? [];
+      final List<UserModel> followers = followersData
+          .map((followerData) => UserModel.fromJson(followerData))
+          .toList();
+
+      if (followersData.contains(currentUserId)) {
+        isLiked = true;
+      } else {
+        isLiked = false;
+      }
+      userModel = userModel.copyWith(followers: followers);
+
+      final followersJson =
+          followers.map((follower) => follower.toJson()).toList();
+
+      await userDoc.update({'followers': followersJson});
+      return isLiked;
+    } catch (e) {
+      log(e.toString());
+
       rethrow;
     }
   }
@@ -247,6 +284,29 @@ class UserRepository implements AbstractAuthRepository {
       final List<UserModel> followers =
           List<UserModel>.from(userData.data()?['followers'] ?? []);
       return followers;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<UserModel>> searchUser({
+    required String text,
+    required UserModel userModel,
+  }) async {
+    try {
+      final List<UserModel> searchResults = [];
+
+      final List<UserModel> followers = userModel.followers;
+
+      for (final follower in followers) {
+        if (follower.username.toLowerCase().contains(text.toLowerCase())) {
+          searchResults.add(follower);
+        }
+      }
+
+      return searchResults;
     } catch (e) {
       log(e.toString());
       rethrow;

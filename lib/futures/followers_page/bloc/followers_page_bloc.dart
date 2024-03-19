@@ -29,12 +29,13 @@ class FollowersPageBloc extends Bloc<FollowersPageEvent, FollowersPageState> {
       searchDebounce?.cancel();
 
       final completer = Completer<void>();
-
+      final userModel =
+          await _abstractAuthRepository.getUserById(userId: event.userId);
       searchDebounce = Timer(const Duration(milliseconds: 200), () async {
-        // final userModelList =_abstractAuthRepository.
-        //     await abstractCoinRepository.cryptocurrencySearch(query: event.query);
-        // emit(SearchCoinLoadedQuery(cryptocurrencySearchCoin: coinList));
+        final userModelList = await _abstractAuthRepository.searchUser(
+            text: event.text, userModel: userModel);
 
+        emit(state.copyWith(userModelList: userModelList));
         completer.complete();
       });
 
