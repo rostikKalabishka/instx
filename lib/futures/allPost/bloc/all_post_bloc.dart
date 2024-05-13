@@ -39,7 +39,7 @@ class AllPostBloc extends Bloc<AllPostEvent, AllPostState> {
   Future<void> _allPostLoaded(AllPostLoaded event, emit) async {
     if (state.status != StatusPage.loaded) {
       emit(state.copyWith(status: StatusPage.loading));
-    }
+    } //
 
     try {
       final allPost = await _abstractPostRepository.getAllPost();
